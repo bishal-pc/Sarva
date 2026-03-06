@@ -111,7 +111,7 @@ export default function OperationsPage() {
                             <TableHead>Count</TableHead>
                             <TableHead>Monthly Salary</TableHead>
                             <TableHead className="text-right">Total</TableHead>
-                          </TableRow>
+                          </TableHeader>
                         </TableHeader>
                         <TableBody>
                           {bd.STAFF.map((s, idx) => (
@@ -145,16 +145,47 @@ export default function OperationsPage() {
                       </Table>
                     </section>
 
-                    {/* One-time Setup */}
-                    <section className="space-y-4">
-                      <h4 className="font-bold uppercase tracking-wider text-sm border-b pb-2">5. One-Time Setup Costs (Estimated ₹60-65 Lakh)</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-4">
-                        {bd.ONE_TIME_SETUP.map((item, idx) => (
-                          <div key={idx} className="flex justify-between items-center p-4 border rounded bg-muted/20">
-                            <span className="text-xs font-bold uppercase text-muted-foreground">{item.item}</span>
-                            <span className="font-code font-bold text-sm">₹{item.cost.toLocaleString()}</span>
-                          </div>
-                        ))}
+                    {/* One-time Setup Breakdown */}
+                    <section className="space-y-8">
+                      <h4 className="font-bold uppercase tracking-wider text-sm border-b pb-2">5. One-Time Setup Costs (By Milestone)</h4>
+                      
+                      {/* Milestone 1: Class 1-8 */}
+                      <div className="space-y-4">
+                        <h5 className="text-xs font-bold uppercase text-primary/70">Milestone 1: Class 1-8 Setup (₹{targets.CLASS_8.setupCost.toLocaleString()})</h5>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {targets.CLASS_8.setupBreakdown.map((item, idx) => (
+                            <div key={idx} className="flex justify-between items-center p-4 border rounded bg-muted/20">
+                              <span className="text-[10px] font-bold uppercase text-muted-foreground">{item.item}</span>
+                              <span className="font-code font-bold text-sm">₹{item.cost.toLocaleString()}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Milestone 2: Class 9-10 */}
+                      <div className="space-y-4">
+                        <h5 className="text-xs font-bold uppercase text-primary/70">Milestone 2: Class 9-10 Setup (₹{targets.CLASS_10.setupCost.toLocaleString()})</h5>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {targets.CLASS_10.setupBreakdown.map((item, idx) => (
+                            <div key={idx} className="flex justify-between items-center p-4 border rounded bg-muted/20">
+                              <span className="text-[10px] font-bold uppercase text-muted-foreground">{item.item}</span>
+                              <span className="font-code font-bold text-sm">₹{item.cost.toLocaleString()}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Milestone 3: Class 11-12 */}
+                      <div className="space-y-4">
+                        <h5 className="text-xs font-bold uppercase text-primary/70">Milestone 3: Class 11-12 Setup (₹{targets.CLASS_12.setupCost.toLocaleString()})</h5>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {targets.CLASS_12.setupBreakdown.map((item, idx) => (
+                            <div key={idx} className="flex justify-between items-center p-4 border rounded bg-muted/20">
+                              <span className="text-[10px] font-bold uppercase text-muted-foreground">{item.item}</span>
+                              <span className="font-code font-bold text-sm">₹{item.cost.toLocaleString()}</span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </section>
                   </div>

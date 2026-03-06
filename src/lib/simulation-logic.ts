@@ -14,18 +14,36 @@ export const SIMULATION_CONSTANTS = {
       monthlyRequirement: 900000,
       setupCost: 2000000,
       description: "Covers 11 teachers (Primary & Middle), principal, admin, support staff, and rent.",
+      setupBreakdown: [
+        { item: "Classroom Furniture (8 rooms)", cost: 640000 },
+        { item: "Library & Office Setup", cost: 500000 },
+        { item: "Books & Basic Materials", cost: 300000 },
+        { item: "Admin & Utilities Setup", cost: 560000 },
+      ]
     },
     CLASS_10: {
       label: "Milestone 2: Secondary to Class 10",
       monthlyRequirement: 1280000,
       setupCost: 4000000,
       description: "Adds 7 secondary teachers and specialized lab facilities.",
+      setupBreakdown: [
+        { item: "Classroom Furniture (2 rooms)", cost: 160000 },
+        { item: "Computer Lab (20 systems)", cost: 1000000 },
+        { item: "Advanced Books", cost: 200000 },
+        { item: "Lab Prep Area Setup", cost: 640000 },
+      ]
     },
     CLASS_12: {
       label: "Milestone 3: Senior Secondary (3 Streams)",
       monthlyRequirement: 2140000,
       setupCost: 6500000,
       description: "Full capacity with Science, Arts, and Commerce streams (33 total teachers).",
+      setupBreakdown: [
+        { item: "Classroom Furniture (6 rooms)", cost: 480000 },
+        { item: "Science Labs (Phy/Chem/Bio)", cost: 1200000 },
+        { item: "Arts & Commerce Resources", cost: 500000 },
+        { item: "Stream Specialized Materials", cost: 320000 },
+      ]
     }
   },
   DETAILED_BREAKDOWN: {
@@ -35,9 +53,9 @@ export const SIMULATION_CONSTANTS = {
       { level: "Secondary (9-10)", count: 7, salary: 45000, total: 315000 },
     ],
     STREAMS: [
-      { name: "Science", count: 5, salary: 55000, total: 310000, setup: 1200000, description: "Physics, Chem, Bio, Math, English" },
-      { name: "Arts", count: 5, salary: 50000, total: 270000, setup: 300000, description: "History, Pol Sci, Geog, Soc/Psych, English" },
-      { name: "Commerce", count: 5, salary: 50000, total: 280000, setup: 500000, description: "Accounts, B.St, Economics, Math, English" },
+      { name: "Science", count: 5, salary: 55000, total: 310000, description: "Physics, Chem, Bio, Math, English" },
+      { name: "Arts", count: 5, salary: 50000, total: 270000, description: "History, Pol Sci, Geog, Soc/Psych, English" },
+      { name: "Commerce", count: 5, salary: 50000, total: 280000, description: "Accounts, B.St, Economics, Math, English" },
     ],
     STAFF: [
       { role: "Principal", count: 1, salary: 70000, total: 70000 },
@@ -50,14 +68,6 @@ export const SIMULATION_CONSTANTS = {
       { item: "Internet & Software", monthly: 10000 },
       { item: "Maintenance & Misc", monthly: 30000 },
       { item: "Stream Labs/Utils", monthly: 70000 },
-    ],
-    ONE_TIME_SETUP: [
-      { item: "Classroom Furniture (18 rooms)", cost: 1440000 },
-      { item: "Computer Lab (20 systems)", cost: 1000000 },
-      { item: "Science Labs (Physics/Chem/Bio)", cost: 1500000 },
-      { item: "Library & Office Setup", cost: 500000 },
-      { item: "Arts & Commerce Resources", cost: 500000 },
-      { item: "Books & Learning Materials", cost: 500000 },
     ]
   }
 };
