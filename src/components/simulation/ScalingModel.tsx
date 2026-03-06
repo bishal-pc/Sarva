@@ -23,6 +23,12 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
   const dynamicNeededClass12 = Math.ceil(SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.monthlyRequirement / amount);
   const dynamicCitizensForAll = dynamicNeededClass12 * districts;
 
+  // National impact stats
+  const totalStudents = districts * 540;
+  const totalTeachers = districts * 34;
+  const totalStaff = districts * 8;
+  const monthlyPayroll = districts * 1865000; // Total staff + teacher monthly salary per school
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
       <Card className="border-l-4 border-l-blue-500">
@@ -127,7 +133,10 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
               District Coverage Target: {districts}
             </div>
             <p className="text-[11px] text-muted-foreground leading-relaxed">
-              Based on {districts} districts, providing quality education to approximately {(districts * 540 / 100000).toFixed(1)} Lakh children simultaneously (540 per school).
+              Based on {districts} districts, providing quality education to approximately {(totalStudents / 100000).toFixed(1)} Lakh children simultaneously (540 per school).
+            </p>
+            <p className="text-[11px] text-muted-foreground leading-relaxed">
+              Employing {totalTeachers.toLocaleString()} teachers and {totalStaff.toLocaleString()} non-teaching staff, paying ₹{(monthlyPayroll / 10000000).toFixed(2)} Crore in monthly salaries across India.
             </p>
           </div>
         </CardContent>
