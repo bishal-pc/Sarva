@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 import {cn} from '@/lib/utils';
-import {Book, FileText, LayoutDashboard, Landmark, Cog} from 'lucide-react';
+import {Book, FileText, LayoutDashboard, Landmark, Cog, MessageSquare} from 'lucide-react';
 
 const navItems = [
   {name: 'Dashboard', href: '/', icon: LayoutDashboard},
@@ -11,6 +11,7 @@ const navItems = [
   {name: 'Public Ledger', href: '/ledger', icon: Landmark},
   {name: 'Constitution', href: '/constitution', icon: Book},
   {name: 'Manifesto', href: '/manifesto', icon: FileText},
+  {name: 'Forum', href: '/forum', icon: MessageSquare},
 ];
 
 export function Navigation() {
