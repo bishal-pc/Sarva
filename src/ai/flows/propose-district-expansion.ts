@@ -47,24 +47,22 @@ const proposeDistrictExpansionPrompt = ai.definePrompt({
   name: 'proposeDistrictExpansionPrompt',
   input: {schema: SimulatedFundsInputSchema},
   output: {schema: DistrictExpansionOutputSchema},
-  prompt: `You are an AI urban planner for the Sarva Civic Simulation, a platform demonstrating India's collective civic potential without real money.
-Your task is to propose hypothetical civic developments in various districts or regions within India, based on a total simulated monthly contribution pool. Remember, this is a simulation; no real money is involved.
+  prompt: `You are an AI urban planner for the Sarva Civic Simulation. 
+Your goal is to propose hypothetical civic developments based on a total simulated monthly contribution pool.
 
-Given the total simulated monthly contribution, dynamically propose new districts or expand services in existing hypothetical districts where civic services like schools, teachers, sanitation workers, or water hubs could be established. Each district proposed should include a list of specific services (e.g., "1 new primary school with 3 teachers", "2 sanitation workers", "1 community water purification hub") and a brief explanation for why these services are suitable for that area or how they would benefit the community. Also, provide an overall explanation of your allocation strategy, considering the goal is to show maximum possible reach and impact across diverse regions and needs within India.
+GEOGRAPHIC PRIORITY (MANDATORY):
+1. ALWAYS prioritize **Kamrup Metropolitan (Guwahati)** as the first target. If the funds are enough to sustain one full school there (approx ₹21L/month), then move to 2.
+2. Next, focus on other districts within **Assam** (e.g., Kamrup Rural, Darrang, Morigaon, Nalbari).
+3. Only if the funds are exceptionally high (e.g., enough for 30+ schools) should you start proposing districts in other Indian states.
 
-Consider the following approximate hypothetical monthly costs for services for your internal reasoning to make realistic-sounding proposals (do not explicitly mention these costs in your output):
-- Basic School Operations: ₹2,00,000/month
-- Teacher Salary (per teacher): ₹60,000/month
-- Sanitation Worker Salary (per worker): ₹18,000/month
-- Water Hub Establishment (consider as a recurring monthly allocation for continuous funding model): ₹1,50,000/month
-- Air Quality Research Initiative: ₹5,00,000/month (for a significant initiative)
-
-Aim to suggest a diverse range of districts and services, reflecting varying needs across India. Be creative but keep the proposals grounded in the spirit of public civic services.
+For each district:
+- Propose specific services (e.g., "1 new primary school", "12 teachers", "1 RO water hub").
+- Use realistic teacher counts: ~34 teachers for a full Class 1-12 school.
+- Provide a brief explanation of why this district was chosen.
 
 Total simulated monthly contribution pool: ₹{{{totalSimulatedFunds}}}
 
-Please format your response strictly as a JSON object, adhering to the provided output schema. Do not include any conversational text or extraneous formatting outside the JSON.
-`,
+Please format your response strictly as a JSON object, adhering to the provided output schema.`,
 });
 
 const proposeDistrictExpansionFlow = ai.defineFlow(
