@@ -7,7 +7,6 @@ import {ResourceDisplay} from '@/components/simulation/ResourceDisplay';
 import {DistrictExpansion} from '@/components/simulation/DistrictExpansion';
 import {ScalingModel} from '@/components/simulation/ScalingModel';
 import {calculateAllocation, SIMULATION_CONSTANTS} from '@/lib/simulation-logic';
-import {proposeDistrictExpansion, DistrictExpansionOutput} from '@/ai/flows/propose-district-expansion';
 import {Separator} from '@/components/ui/separator';
 import {Github, ExternalLink, ShieldCheck, Wallet, Info} from 'lucide-react';
 
@@ -18,8 +17,6 @@ const INITIAL_STATS = {
 
 export default function Home() {
   const [stats, setStats] = useState(INITIAL_STATS);
-  const [districtData, setDistrictData] = useState<DistrictExpansionOutput | undefined>();
-  const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<string>("");
 
@@ -35,24 +32,6 @@ export default function Home() {
       setStats(JSON.parse(savedStats));
     }
   }, []);
-
-  useEffect(() => {
-    async function fetchAiData() {
-      setLoading(true);
-      try {
-        const districts = await proposeDistrictExpansion({totalSimulatedFunds: stats.pool});
-        setDistrictData(districts);
-      } catch (e) {
-        // Silently fail
-      } finally {
-        setLoading(false);
-      }
-    }
-    // Only fetch if there's some pool data or it's the first load
-    if (stats.pool > 0 || !districtData) {
-      fetchAiData();
-    }
-  }, [stats.pool]);
 
   const handleNewContribution = (amount: number) => {
     setStats(prev => {
@@ -137,8 +116,8 @@ export default function Home() {
             <Separator />
 
             <div>
-              <h3 className="text-lg font-bold mb-4 uppercase tracking-widest text-muted-foreground/60">Growth Projection</h3>
-              <DistrictExpansion data={districtData} />
+              <h3 className="text-lg font-bold mb-4 uppercase tracking-widest text-muted-foreground/60">Growth Projection & Roadmap</h3>
+              <DistrictExpansion />
             </div>
           </div>
 
