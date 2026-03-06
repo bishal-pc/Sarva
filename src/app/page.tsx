@@ -22,8 +22,14 @@ export default function Home() {
   const [districtData, setDistrictData] = useState<DistrictExpansionOutput | undefined>();
   const [aiSuggestion, setAiSuggestion] = useState<string>("");
   const [loading, setLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState<string>("");
 
   const allocation = calculateAllocation(stats.pool);
+
+  useEffect(() => {
+    // Set the last updated date on mount to avoid hydration mismatch
+    setLastUpdated(new Date().toLocaleDateString());
+  }, []);
 
   useEffect(() => {
     async function fetchAiData() {
@@ -112,7 +118,7 @@ export default function Home() {
                 </div>
                 <div className="flex justify-between items-center border-b pb-2">
                   <span className="text-muted-foreground">Last Updated</span>
-                  <span>{new Date().toLocaleDateString()}</span>
+                  <span>{lastUpdated}</span>
                 </div>
                 <div className="flex justify-between items-center border-b pb-2">
                   <span className="text-muted-foreground">Git Hash</span>
