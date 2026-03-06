@@ -41,11 +41,11 @@ export default function OperationsPage() {
                     Breakdown
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-3xl max-h-[90vh]">
-                  <DialogHeader>
+                <DialogContent className="max-w-3xl max-h-[90vh] flex flex-col p-0">
+                  <DialogHeader className="p-6 pb-2">
                     <DialogTitle className="text-2xl font-black uppercase tracking-tight">Financial & Operational Breakdown</DialogTitle>
                   </DialogHeader>
-                  <ScrollArea className="h-full pr-4">
+                  <ScrollArea className="flex-1 px-6">
                     <div className="space-y-8 py-4">
                       {/* Teachers Table */}
                       <section className="space-y-3">
@@ -119,7 +119,7 @@ export default function OperationsPage() {
                       {/* One-time Setup */}
                       <section className="space-y-3">
                         <h4 className="font-bold uppercase tracking-wider text-sm border-b pb-1">4. One-Time Setup Costs (Estimated ₹35-40 Lakh)</h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-8">
                           {bd.ONE_TIME_SETUP.map((item, idx) => (
                             <div key={idx} className="flex justify-between items-center p-3 border rounded bg-muted/20">
                               <span className="text-xs font-medium">{item.item}</span>
