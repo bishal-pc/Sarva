@@ -25,12 +25,10 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
   const dynamicCitizensForAll = dynamicNeededClass12 * districts;
 
   // Time to collect setup cost (in months)
-  // To make this dynamic and show efficiency gains, we use a fixed benchmark of 2,000 citizens.
-  // This population size represents a realistic "Foundation Group" for a single institution.
-  const benchmark = 2000;
-  const timeClass8 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_8.setupCost / (benchmark * amount)).toFixed(1);
-  const timeClass10 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_10.setupCost / (benchmark * amount)).toFixed(1);
-  const timeClass12 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.setupCost / (benchmark * amount)).toFixed(1);
+  // UPDATED LOGIC: Use the number of citizens needed for sustenance as the benchmark for building.
+  const timeClass8 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_8.setupCost / (dynamicNeededClass8 * amount)).toFixed(1);
+  const timeClass10 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_10.setupCost / (dynamicNeededClass10 * amount)).toFixed(1);
+  const timeClass12 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.setupCost / (dynamicNeededClass12 * amount)).toFixed(1);
 
   // National impact stats
   const totalStudents = districts * 540;
@@ -62,7 +60,7 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
                     <strong>Sustenance:</strong> Number of citizens required to meet the monthly operating budget at ₹{amount}/month.
                   </p>
                   <p className="text-[10px] leading-relaxed">
-                    <strong>Setup Phase:</strong> Time required for a benchmark "Foundation Group" of {benchmark.toLocaleString()} citizens to raise the initial capital at ₹{amount}/month.
+                    <strong>Setup Phase:</strong> Time required for the <u>same sustenance group</u> to raise the initial capital at ₹{amount}/month.
                   </p>
                 </TooltipContent>
               </Tooltip>
