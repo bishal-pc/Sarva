@@ -69,7 +69,7 @@ export default function ConstitutionPage() {
                       <li>Implementation of clean air initiatives to reduce exposure to pollution</li>
                       <li>Maintenance of clean public spaces through dignified sanitation systems</li>
                     </ul>
-                    <p>3.2 These objectives shall be carried out through four permanent constitutional wings: Sarva Shiksha (Education), Sarva Jal (Water), Sarva Vayu (Air), and Sarva Swachata (Cleanliness).</p>
+                    <p>3.2 These objectives shall be carried out through four permanent constitutional wings: Sarva Gyan (Education), Sarva Jal (Water), Sarva Vayu (Air), and Sarva Swachata (Cleanliness).</p>
                     <p>3.3 No activity outside these objectives shall be undertaken under any circumstances.</p>
                   </div>
                 </section>
