@@ -8,6 +8,23 @@ export const SIMULATION_CONSTANTS = {
     WATER_HUB_SETUP: 150000,
     AIR_RESEARCH_UNIT: 500000,
   },
+  OPERATIONAL_TARGETS: {
+    CLASS_8: {
+      label: "Milestone 1: Primary to Class 8",
+      monthlyRequirement: 800000,
+      description: "Covers 10 teachers, basic operations, and infrastructure for 8 grades.",
+    },
+    CLASS_10: {
+      label: "Milestone 2: Secondary to Class 10",
+      monthlyRequirement: 1040000,
+      description: "Adds 4 specialized teachers and advanced lab facilities for secondary grades.",
+    },
+    CLASS_12: {
+      label: "Milestone 3: Senior Secondary to Class 12",
+      monthlyRequirement: 1280000,
+      description: "Adds 4 senior lecturers and specialized streams for classes 11 and 12.",
+    }
+  }
 };
 
 export type ResourceAllocation = {
@@ -19,18 +36,11 @@ export type ResourceAllocation = {
 };
 
 export function calculateAllocation(totalPool: number): ResourceAllocation {
-  // Simple heuristic allocation:
-  // 40% Education (Schools & Teachers)
-  // 25% Sanitation
-  // 20% Water Infrastructure
-  // 15% Air Quality Research
-
   const educationPool = totalPool * 0.4;
   const sanitationPool = totalPool * 0.25;
   const waterPool = totalPool * 0.2;
   const airPool = totalPool * 0.15;
 
-  // Each school needs ~3 teachers for operations
   const schoolCostWithTeachers = SIMULATION_CONSTANTS.COSTS.SCHOOL_OPERATIONS + (3 * SIMULATION_CONSTANTS.COSTS.TEACHER_SALARY);
   const schools = Math.floor(educationPool / schoolCostWithTeachers);
   const teachers = schools * 3;

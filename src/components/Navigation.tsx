@@ -3,10 +3,11 @@
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 import {cn} from '@/lib/utils';
-import {Book, FileText, LayoutDashboard, Landmark} from 'lucide-react';
+import {Book, FileText, LayoutDashboard, Landmark, Cog} from 'lucide-react';
 
 const navItems = [
   {name: 'Dashboard', href: '/', icon: LayoutDashboard},
+  {name: 'Operations', href: '/operations', icon: Cog},
   {name: 'Public Ledger', href: '/ledger', icon: Landmark},
   {name: 'Constitution', href: '/constitution', icon: Book},
   {name: 'Manifesto', href: '/manifesto', icon: FileText},
@@ -35,7 +36,7 @@ export function Navigation() {
               )}
             >
               <item.icon className="w-4 h-4" />
-              <span className="hidden sm:inline">{item.name}</span>
+              <span className="hidden lg:inline">{item.name}</span>
             </Link>
           ))}
         </div>
