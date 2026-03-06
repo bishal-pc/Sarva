@@ -94,6 +94,11 @@ export default function Home() {
         </div>
       </header>
 
+      {/* Primary Call to Action: Contribution Form */}
+      <section className="max-w-xl mx-auto">
+        <ContributionForm onSuccess={handleNewContribution} />
+      </section>
+
       {/* Dashboard Section */}
       <section className="space-y-8">
         <div className="flex flex-col md:flex-row justify-between items-end gap-4">
@@ -144,8 +149,6 @@ export default function Home() {
           </div>
 
           <aside className="space-y-8">
-            <ContributionForm onSuccess={handleNewContribution} />
-            
             <div className="bg-card p-6 rounded-lg border shadow-sm space-y-6">
               <div className="flex items-center gap-2">
                 <Wallet className="w-5 h-5 text-primary" />
