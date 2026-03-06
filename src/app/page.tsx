@@ -187,7 +187,12 @@ export default function Home() {
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-muted-foreground">Repository</span>
-                  <a href="#" className="flex items-center gap-1 hover:underline text-primary">
+                  <a 
+                    href="https://github.com/bishal-pc/Sarva.git" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="flex items-center gap-1 hover:underline text-primary"
+                  >
                     sarva-sim <ExternalLink className="w-3 h-3" />
                   </a>
                 </div>
@@ -206,7 +211,12 @@ export default function Home() {
           <p className="text-sm text-muted-foreground leading-relaxed">
             Sarva is an open-source initiative. Our logic, aggregation algorithms, and simulation constants are fully transparent and publicly auditable. 
           </p>
-          <a href="#" className="inline-flex items-center gap-2 text-primary font-bold hover:underline">
+          <a 
+            href="https://github.com/bishal-pc/Sarva.git" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="inline-flex items-center gap-2 text-primary font-bold hover:underline"
+          >
             View Public Repository <ExternalLink className="w-4 h-4" />
           </a>
         </div>
