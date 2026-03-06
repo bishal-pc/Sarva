@@ -1,9 +1,8 @@
-
 "use client";
 
 import {Card, CardContent, CardHeader, CardTitle, CardDescription} from '@/components/ui/card';
 import {SIMULATION_CONSTANTS} from '@/lib/simulation-logic';
-import {ArrowRight, School, MapPin, Layers, Info, Trash2, Sparkles, Award, Droplets, Users} from 'lucide-react';
+import {ArrowRight, School, MapPin, Layers, Info, Trash2, Sparkles, Award, Droplets, Users, Wind, Waves, FlaskConical} from 'lucide-react';
 import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from '@/components/ui/dialog';
 import {Button} from '@/components/ui/button';
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '@/components/ui/table';
@@ -273,7 +272,7 @@ export default function OperationsPage() {
             </CardContent>
           </Card>
 
-          {/* New Wing: Sarva Swachata */}
+          {/* Sarva Swachata: The Cleanliness Wing */}
           <Card className="border-l-4 border-l-emerald-500 shadow-sm">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -342,6 +341,65 @@ export default function OperationsPage() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Sarva Vayu & Sarva Jal: Surplus R&D and Sustainability */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <Card className="border-l-4 border-l-blue-400 shadow-sm h-full">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Wind className="w-5 h-5 text-blue-400" />
+                  Sarva Vayu: Clean Air Research
+                </CardTitle>
+                <CardDescription className="text-xs">
+                  Advanced R&D for air purifying and pollution reduction technologies.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-xs leading-relaxed text-muted-foreground">
+                  With education and cleanliness secured, secondary surplus is diverted to **Sarva Vayu**. This wing funds research into low-cost air purification systems and pollution-reducing urban furniture.
+                </p>
+                <div className="space-y-2">
+                  <h5 className="text-[10px] font-bold uppercase text-foreground flex items-center gap-1">
+                    <FlaskConical className="w-3 h-3 text-blue-500" />
+                    Current R&D Focus
+                  </h5>
+                  <ul className="text-[10px] text-muted-foreground space-y-1 list-disc list-inside">
+                    <li>Hyper-local air monitoring networks</li>
+                    <li>Bio-filter wall installations for schools</li>
+                    <li>Smog-reduction street lighting modules</li>
+                  </ul>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-l-4 border-l-cyan-500 shadow-sm h-full">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Waves className="w-5 h-5 text-cyan-500" />
+                  Sarva Jal: Harvesting Zones
+                </CardTitle>
+                <CardDescription className="text-xs">
+                  Developing community-scale rainwater harvesting and water security.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-xs leading-relaxed text-muted-foreground">
+                  The final tier of surplus funding activates **Sarva Jal**, which focuses on water sovereignty. We transform public land into functional water harvesting zones that recharge local aquifers.
+                </p>
+                <div className="space-y-2">
+                  <h5 className="text-[10px] font-bold uppercase text-foreground flex items-center gap-1">
+                    <Droplets className="w-3 h-3 text-cyan-500" />
+                    Infrastructure Targets
+                  </h5>
+                  <ul className="text-[10px] text-muted-foreground space-y-1 list-disc list-inside">
+                    <li>School-based filtration & storage systems</li>
+                    <li>Public "Jal Kendras" (Water Hubs)</li>
+                    <li>Integrated urban aquifer recharge wells</li>
+                  </ul>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
         <aside className="space-y-6">
