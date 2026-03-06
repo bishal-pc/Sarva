@@ -1,9 +1,11 @@
 export const SIMULATION_CONSTANTS = {
   MIN_CONTRIBUTION: 10,
   MAX_CONTRIBUTION: 500,
+  TOTAL_DISTRICTS_INDIA: 785, // Approximate number of districts in India
+  CHILD_POP_ESTIMATE_PER_DISTRICT: 350000, // Estimated children population per district needing aid
   COSTS: {
     TEACHER_SALARY_AVG: 45000,
-    SCHOOL_OPERATIONS_BASE: 300000, // Rent + Utilities + Maintenance
+    SCHOOL_OPERATIONS_BASE: 300000,
     SANITATION_WORKER: 18000,
     WATER_HUB_SETUP: 150000,
     AIR_RESEARCH_UNIT: 500000,
@@ -77,19 +79,24 @@ export type ResourceAllocation = {
   sanitationWorkers: number;
   waterHubs: number;
   airResearchUnits: number;
+  remainingForNextSchool: number;
+  citizensNeededPerSchool: number;
 };
 
-export function calculateAllocation(totalPool: number): ResourceAllocation {
+export function calculateAllocation(totalPool: number, totalParticipants: number): ResourceAllocation {
   const educationPool = totalPool * 0.4;
   const sanitationPool = totalPool * 0.25;
   const waterPool = totalPool * 0.2;
   const airPool = totalPool * 0.15;
 
-  // We use the Class 12 target as the gold standard for a "Full Capacity" school
-  const schoolCostWithTeachers = SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.monthlyRequirement;
-  const schools = Math.floor(educationPool / schoolCostWithTeachers);
-  const teachers = schools * 34; // Full strength (18 + 16 from 3 streams incl. CS)
+  const schoolCost = SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.monthlyRequirement;
+  const schools = Math.floor(educationPool / schoolCost);
+  const remainingForNextSchool = schoolCost - (educationPool % schoolCost);
+  
+  const averageContribution = totalParticipants > 0 ? totalPool / totalParticipants : 250;
+  const citizensNeededPerSchool = Math.ceil(schoolCost / averageContribution);
 
+  const teachers = schools * 34;
   const sanitationWorkers = Math.floor(sanitationPool / SIMULATION_CONSTANTS.COSTS.SANITATION_WORKER);
   const waterHubs = Math.floor(waterPool / SIMULATION_CONSTANTS.COSTS.WATER_HUB_SETUP);
   const airResearchUnits = Math.floor(airPool / SIMULATION_CONSTANTS.COSTS.AIR_RESEARCH_UNIT);
@@ -100,5 +107,7 @@ export function calculateAllocation(totalPool: number): ResourceAllocation {
     sanitationWorkers,
     waterHubs,
     airResearchUnits,
+    remainingForNextSchool,
+    citizensNeededPerSchool
   };
 }

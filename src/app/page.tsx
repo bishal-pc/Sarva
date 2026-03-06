@@ -5,11 +5,12 @@ import {DashboardStats} from '@/components/simulation/DashboardStats';
 import {ContributionForm} from '@/components/simulation/ContributionForm';
 import {ResourceDisplay} from '@/components/simulation/ResourceDisplay';
 import {DistrictExpansion} from '@/components/simulation/DistrictExpansion';
+import {ScalingModel} from '@/components/simulation/ScalingModel';
 import {calculateAllocation, SIMULATION_CONSTANTS} from '@/lib/simulation-logic';
 import {proposeDistrictExpansion, DistrictExpansionOutput} from '@/ai/flows/propose-district-expansion';
 import {suggestSimulatedFundAllocation} from '@/ai/flows/suggest-simulated-fund-allocation-flow';
 import {Separator} from '@/components/ui/separator';
-import {Github, ExternalLink, ShieldCheck, Wallet} from 'lucide-react';
+import {Github, ExternalLink, ShieldCheck, Wallet, Info} from 'lucide-react';
 
 const INITIAL_STATS = {
   participants: 12430,
@@ -24,7 +25,7 @@ export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<string>("");
 
-  const allocation = calculateAllocation(stats.pool);
+  const allocation = calculateAllocation(stats.pool, stats.participants);
 
   useEffect(() => {
     setMounted(true);
@@ -91,13 +92,36 @@ export default function Home() {
         
         <DashboardStats totalParticipants={stats.participants} totalPool={stats.pool} />
 
+        {/* Progress Metric */}
+        <div className="bg-primary/5 p-4 rounded-lg border border-primary/10 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <Info className="w-5 h-5 text-primary" />
+            <div className="text-sm">
+              <span className="font-bold">Next School Progress:</span> ₹{(stats.pool % SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.monthlyRequirement).toLocaleString()} / ₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.monthlyRequirement.toLocaleString()}
+            </div>
+          </div>
+          <div className="text-sm font-bold text-primary flex items-center gap-2">
+            ₹{allocation.remainingForNextSchool.toLocaleString()} <span className="text-[10px] uppercase font-normal text-muted-foreground">to go for next institution</span>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-12">
             <div>
               <h3 className="text-lg font-bold mb-4 uppercase tracking-widest text-muted-foreground/60">Simulated Public Assets</h3>
               <ResourceDisplay allocation={allocation} aiSuggestion={aiSuggestion} />
             </div>
             
+            <Separator />
+
+            <div>
+              <h3 className="text-lg font-bold mb-6 uppercase tracking-widest text-muted-foreground/60">National Scaling & Recruitment</h3>
+              <ScalingModel 
+                citizensNeededPerSchool={allocation.citizensNeededPerSchool} 
+                totalParticipants={stats.participants}
+              />
+            </div>
+
             <Separator />
 
             <div>
