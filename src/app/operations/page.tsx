@@ -2,7 +2,7 @@
 
 import {Card, CardContent, CardHeader, CardTitle, CardDescription} from '@/components/ui/card';
 import {SIMULATION_CONSTANTS} from '@/lib/simulation-logic';
-import {ArrowRight, School, MapPin, Layers, Info, Trash2, Sparkles, Award, Droplets, Users, Wind, Waves, FlaskConical} from 'lucide-react';
+import {ArrowRight, School, MapPin, Layers, Info, Trash2, Sparkles, Award, Droplets, Users, Wind, Waves, FlaskConical, Bed} from 'lucide-react';
 import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from '@/components/ui/dialog';
 import {Button} from '@/components/ui/button';
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '@/components/ui/table';
@@ -101,9 +101,34 @@ export default function OperationsPage() {
                       </Table>
                     </section>
 
+                    {/* Boarding & Hostel */}
+                    <section className="space-y-4">
+                      <h4 className="font-bold uppercase tracking-wider text-sm border-b pb-2">3. Boarding & Hostel (300 Students)</h4>
+                      <Table>
+                        <TableHeader>
+                          <TableRow className="bg-muted/50">
+                            <TableHead>Item</TableHead>
+                            <TableHead>Unit/Count</TableHead>
+                            <TableHead>Rate/Monthly</TableHead>
+                            <TableHead className="text-right">Total</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {bd.BOARDING.map((b, idx) => (
+                            <TableRow key={idx}>
+                              <TableCell className="font-medium">{b.item}</TableCell>
+                              <TableCell>{b.count}</TableCell>
+                              <TableCell>₹{b.rate.toLocaleString()}</TableCell>
+                              <TableCell className="text-right font-code font-bold">₹{b.total.toLocaleString()}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </section>
+
                     {/* Non-Teaching Staff */}
                     <section className="space-y-4">
-                      <h4 className="font-bold uppercase tracking-wider text-sm border-b pb-2">3. Non-Teaching Staff</h4>
+                      <h4 className="font-bold uppercase tracking-wider text-sm border-b pb-2">4. Non-Teaching Staff</h4>
                       <Table>
                         <TableHeader>
                           <TableRow className="bg-muted/50">
@@ -128,7 +153,7 @@ export default function OperationsPage() {
 
                     {/* Infrastructure */}
                     <section className="space-y-4">
-                      <h4 className="font-bold uppercase tracking-wider text-sm border-b pb-2">4. Infrastructure & Utilities (Monthly)</h4>
+                      <h4 className="font-bold uppercase tracking-wider text-sm border-b pb-2">5. Infrastructure & Utilities (Monthly)</h4>
                       <Table>
                         <TableBody>
                           {bd.INFRASTRUCTURE.map((i, idx) => (
@@ -143,50 +168,6 @@ export default function OperationsPage() {
                           </TableRow>
                         </TableBody>
                       </Table>
-                    </section>
-
-                    {/* One-time Setup Breakdown */}
-                    <section className="space-y-8">
-                      <h4 className="font-bold uppercase tracking-wider text-sm border-b pb-2">5. One-Time Setup Costs (By Milestone)</h4>
-                      
-                      {/* Milestone 1: Class 1-8 */}
-                      <div className="space-y-4">
-                        <h5 className="text-xs font-bold uppercase text-primary/70">Milestone 1: Class 1-8 Setup (₹{targets.CLASS_8.setupCost.toLocaleString()})</h5>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {targets.CLASS_8.setupBreakdown.map((item, idx) => (
-                            <div key={idx} className="flex justify-between items-center p-4 border rounded bg-muted/20">
-                              <span className="text-[10px] font-bold uppercase text-muted-foreground">{item.item}</span>
-                              <span className="font-code font-bold text-sm">₹{item.cost.toLocaleString()}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Milestone 2: Class 9-10 */}
-                      <div className="space-y-4">
-                        <h5 className="text-xs font-bold uppercase text-primary/70">Milestone 2: Class 9-10 Setup (₹{targets.CLASS_10.setupCost.toLocaleString()})</h5>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {targets.CLASS_10.setupBreakdown.map((item, idx) => (
-                            <div key={idx} className="flex justify-between items-center p-4 border rounded bg-muted/20">
-                              <span className="text-[10px] font-bold uppercase text-muted-foreground">{item.item}</span>
-                              <span className="font-code font-bold text-sm">₹{item.cost.toLocaleString()}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Milestone 3: Class 11-12 */}
-                      <div className="space-y-4">
-                        <h5 className="text-xs font-bold uppercase text-primary/70">Milestone 3: Class 11-12 Setup (₹{targets.CLASS_12.setupCost.toLocaleString()})</h5>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {targets.CLASS_12.setupBreakdown.map((item, idx) => (
-                            <div key={idx} className="flex justify-between items-center p-4 border rounded bg-muted/20">
-                              <span className="text-[10px] font-bold uppercase text-muted-foreground">{item.item}</span>
-                              <span className="font-code font-bold text-sm">₹{item.cost.toLocaleString()}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </DialogContent>
@@ -247,7 +228,8 @@ export default function OperationsPage() {
               </div>
             </CardContent>
           </Card>
-
+          
+          {/* ... rest of the file ... */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -272,7 +254,6 @@ export default function OperationsPage() {
             </CardContent>
           </Card>
 
-          {/* Sarva Swachata: The Cleanliness Wing */}
           <Card className="border-l-4 border-l-emerald-500 shadow-sm">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -342,7 +323,6 @@ export default function OperationsPage() {
             </CardContent>
           </Card>
 
-          {/* Sarva Vayu & Sarva Jal: Surplus R&D and Sustainability */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <Card className="border-l-4 border-l-blue-400 shadow-sm h-full">
               <CardHeader>
@@ -414,12 +394,16 @@ export default function OperationsPage() {
                   <span className="font-bold">540</span>
                 </div>
                 <div className="flex items-center justify-between text-xs border-b pb-2">
+                  <span>Boarding Students</span>
+                  <span className="font-bold text-primary">300</span>
+                </div>
+                <div className="flex items-center justify-between text-xs border-b pb-2">
                   <span>Teachers (Full)</span>
                   <span className="font-bold">34</span>
                 </div>
                 <div className="flex items-center justify-between text-xs border-b pb-2">
-                  <span>Support Staff</span>
-                  <span className="font-bold">8</span>
+                  <span>Support & Mess Staff</span>
+                  <span className="font-bold">12</span>
                 </div>
                 <div className="flex items-center justify-between text-xs border-b pb-2">
                   <span>Streams Offered</span>
@@ -428,17 +412,17 @@ export default function OperationsPage() {
               </div>
               <div className="pt-4 space-y-2">
                 <h5 className="text-[10px] font-bold uppercase text-muted-foreground">Operating Cost Per Student</h5>
-                <div className="text-xl font-code font-bold text-primary">₹4,074<span className="text-[10px] font-normal text-muted-foreground">/mo</span></div>
-                <p className="text-[10px] text-muted-foreground italic">Significantly lower than average private institutions with comparable standards.</p>
+                <div className="text-xl font-code font-bold text-primary">₹6,707<span className="text-[10px] font-normal text-muted-foreground">/mo</span></div>
+                <p className="text-[10px] text-muted-foreground italic">Inclusive of boarding, food, and high-quality Class 1-12 education.</p>
               </div>
             </CardContent>
           </Card>
 
           <div className="bg-primary text-primary-foreground p-6 rounded-lg space-y-4">
-            <School className="w-8 h-8 opacity-50" />
-            <h4 className="font-bold">Zero Overhead Policy</h4>
+            <Bed className="w-8 h-8 opacity-50" />
+            <h4 className="font-bold">Holistic Boarding Model</h4>
             <p className="text-xs leading-relaxed opacity-80">
-              In this simulation, we assume zero administrative leakage. 100% of the virtual contribution is mapped directly to the school's operational capacity.
+              The boarding model ensures that children from remote areas have access to quality education, safe housing, and nutritious meals at zero cost to their families.
             </p>
           </div>
         </aside>

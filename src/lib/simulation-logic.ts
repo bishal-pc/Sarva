@@ -37,15 +37,15 @@ export const SIMULATION_CONSTANTS = {
       ]
     },
     CLASS_12: {
-      label: "Milestone 3: Senior Secondary (3 Streams)",
-      monthlyRequirement: 2200000,
-      setupCost: 6500000,
-      description: "Full capacity with Science (incl. Computer Science), Arts, and Commerce (34 total teachers).",
+      label: "Milestone 3: Full School + Boarding",
+      monthlyRequirement: 3622000, // Base 2.2M + 1.422M Boarding
+      setupCost: 9000000, // Increased for hostel setup
+      description: "Full capacity with 3 Streams + Boarding for 300 students (Food, Hostel & Mess Staff).",
       setupBreakdown: [
-        { item: "Classroom Furniture (6 rooms)", cost: 480000 },
-        { item: "Science Labs (Phy/Chem/Bio)", cost: 1200000 },
-        { item: "Arts & Commerce Resources", cost: 500000 },
-        { item: "Stream Specialized Materials", cost: 320000 },
+        { item: "Labs & Classrooms (Milestone 3)", cost: 2500000 },
+        { item: "Hostel Furniture & Beds (300)", cost: 1500000 },
+        { item: "Kitchen & Mess Equipment", cost: 500000 },
+        { item: "Specialized Stream Materials", cost: 500000 },
       ]
     }
   },
@@ -64,6 +64,12 @@ export const SIMULATION_CONSTANTS = {
       { role: "Principal", count: 1, salary: 70000, total: 70000 },
       { role: "Admin/Office", count: 2, salary: 30000, total: 60000 },
       { role: "Support/Sanitation/Guard", count: 5, salary: 18000, total: 90000 },
+    ],
+    BOARDING: [
+      { item: "Food Cost (300 Students)", count: 300, rate: 3000, total: 900000 },
+      { item: "Hostel Building (18k sq ft)", count: 1, rate: 350000, total: 350000 },
+      { item: "Hostel Utilities", count: 1, rate: 100000, total: 100000 },
+      { item: "Mess Staff", count: 4, rate: 18000, total: 72000 },
     ],
     INFRASTRUCTURE: [
       { item: "Building Rent (10k sq ft)", monthly: 250000 },
