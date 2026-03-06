@@ -8,7 +8,7 @@ import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import {SIMULATION_CONSTANTS} from '@/lib/simulation-logic';
 import {useToast} from '@/hooks/use-toast';
-import {Coins} from 'lucide-react';
+import {Coins, Info} from 'lucide-react';
 
 const STATES = [
   "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", 
@@ -30,7 +30,7 @@ export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => vo
     if (lastContribution) {
       const date = new Date(lastContribution);
       const now = new Date();
-      // Enforce one contribution per month
+      // Enforce one contribution per month per device
       if (date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear()) {
         setHasContributed(true);
       }
@@ -49,11 +49,11 @@ export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => vo
       return;
     }
 
-    if (amount < SIMULATION_CONSTANTS.MIN_CONTRIBUTION || amount > SIMULATION_CONSTANTS.MAX_CONTRIBUTION) {
+    if (amount < SIMULATION_CONSTANTS.MIN_CONTRIBUTION || amount > SIMULATION_CONSTANTS.MAX_REALISTIC_CONTRIBUTION) {
       toast({
         variant: "destructive",
         title: "Invalid Amount",
-        description: `Please enter an amount between ₹${SIMULATION_CONSTANTS.MIN_CONTRIBUTION} and ₹${SIMULATION_CONSTANTS.MAX_CONTRIBUTION}.`,
+        description: `Please enter an amount between ₹${SIMULATION_CONSTANTS.MIN_CONTRIBUTION} and ₹${SIMULATION_CONSTANTS.MAX_REALISTIC_CONTRIBUTION}.`,
       });
       return;
     }
@@ -101,14 +101,17 @@ export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => vo
               id="amount"
               type="number"
               min={SIMULATION_CONSTANTS.MIN_CONTRIBUTION}
-              max={SIMULATION_CONSTANTS.MAX_CONTRIBUTION}
+              max={SIMULATION_CONSTANTS.MAX_REALISTIC_CONTRIBUTION}
               value={amount}
               onChange={(e) => setAmount(Number(e.target.value))}
               className="text-lg font-semibold"
             />
-            <p className="text-[10px] text-muted-foreground">
-              Min: ₹{SIMULATION_CONSTANTS.MIN_CONTRIBUTION} | Max: ₹{SIMULATION_CONSTANTS.MAX_CONTRIBUTION}
-            </p>
+            <div className="flex items-start gap-2 p-2 rounded bg-blue-50/50 border border-blue-100 mt-2">
+              <Info className="w-3 h-3 text-blue-600 shrink-0 mt-0.5" />
+              <p className="text-[10px] text-blue-800 leading-tight">
+                <strong>Realistic Data Lock:</strong> For simulation accuracy, virtual contributions are currently limited to a maximum of <strong>₹500</strong>. This helps collect more grounded data on average citizen potential.
+              </p>
+            </div>
           </div>
           
           <div className="space-y-2">
@@ -139,7 +142,7 @@ export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => vo
             Submit to Simulation
           </Button>
           <p className="text-[10px] text-center text-muted-foreground uppercase tracking-tighter">
-            No real money is collected. This is for research and demonstration only.
+            One submission per month per device. No real money involved.
           </p>
         </form>
       </CardContent>

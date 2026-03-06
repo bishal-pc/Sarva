@@ -1,6 +1,7 @@
 export const SIMULATION_CONSTANTS = {
   MIN_CONTRIBUTION: 10,
   MAX_CONTRIBUTION: 10000,
+  MAX_REALISTIC_CONTRIBUTION: 500,
   TOTAL_DISTRICTS_INDIA: 785, // Approximate number of districts in India
   CHILD_POP_ESTIMATE_PER_DISTRICT: 350000, // Estimated children population per district needing aid
   COSTS: {
@@ -95,7 +96,7 @@ export function calculateAllocation(totalPool: number, totalParticipants: number
   const schools = Math.floor(educationPool / schoolCost);
   const remainingForNextSchool = schoolCost - (educationPool % schoolCost);
   
-  // Base calculation on user's request: Assume ₹10 per person
+  // Base calculation for simple indicators
   const baseDonation = 10;
   const citizensNeededClass8 = Math.ceil(SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_8.monthlyRequirement / baseDonation);
   const citizensNeededClass10 = Math.ceil(SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_10.monthlyRequirement / baseDonation);
