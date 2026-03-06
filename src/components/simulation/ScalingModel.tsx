@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -13,7 +14,7 @@ interface ScalingModelProps {
 }
 
 export function ScalingModel({ allocation, totalParticipants }: ScalingModelProps) {
-  const [perCitizenAmount, setPerCitizenAmount] = useState([10]);
+  const [perCitizenAmount, setPerCitizenAmount] = useState([500]);
   const districts = SIMULATION_CONSTANTS.TOTAL_DISTRICTS_INDIA;
   
   // Dynamic calculations based on user input
@@ -24,8 +25,9 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
   const dynamicCitizensForAll = dynamicNeededClass12 * districts;
 
   // Time to collect setup cost (in months)
-  // To make this dynamic and show efficiency gains, we use a fixed benchmark of 1 Lakh (100,000) citizens.
-  const benchmark = 100000;
+  // To make this dynamic and show efficiency gains, we use a fixed benchmark of 2,000 citizens.
+  // This population size represents a realistic "Foundation Group" for a single institution.
+  const benchmark = 2000;
   const timeClass8 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_8.setupCost / (benchmark * amount)).toFixed(1);
   const timeClass10 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_10.setupCost / (benchmark * amount)).toFixed(1);
   const timeClass12 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.setupCost / (benchmark * amount)).toFixed(1);
@@ -33,8 +35,10 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
   // National impact stats
   const totalStudents = districts * 540;
   const totalTeachers = districts * 34;
-  const totalStaff = districts * 8;
-  const monthlyPayroll = districts * 1865000; // Total staff + teacher monthly salary per school
+  const totalStaff = districts * 12; // Including support and mess staff
+  const monthlyPayroll = districts * (SIMULATION_CONSTANTS.DETAILED_BREAKDOWN.TEACHERS.reduce((acc, t) => acc + t.total, 0) + 
+                                     SIMULATION_CONSTANTS.DETAILED_BREAKDOWN.STREAMS.reduce((acc, s) => acc + s.total, 0) + 
+                                     SIMULATION_CONSTANTS.DETAILED_BREAKDOWN.STAFF.reduce((acc, s) => acc + s.total, 0));
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -58,7 +62,7 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
                     <strong>Sustenance:</strong> Number of citizens required to meet the monthly operating budget at ₹{amount}/month.
                   </p>
                   <p className="text-[10px] leading-relaxed">
-                    <strong>Setup Phase:</strong> Time required for a benchmark population of 1 Lakh citizens to raise the initial capital at ₹{amount}/month.
+                    <strong>Setup Phase:</strong> Time required for a benchmark "Foundation Group" of {benchmark.toLocaleString()} citizens to raise the initial capital at ₹{amount}/month.
                   </p>
                 </TooltipContent>
               </Tooltip>
@@ -88,7 +92,7 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
             />
             <div className="flex justify-between text-[10px] font-bold text-muted-foreground uppercase">
               <span>Min: ₹{SIMULATION_CONSTANTS.MIN_CONTRIBUTION}</span>
-              <span>Visualization Max: ₹{SIMULATION_CONSTANTS.MAX_CONTRIBUTION}</span>
+              <span>Visualization Max: ₹{SIMULATION_CONSTANTS.MAX_CONTRIBUTION.toLocaleString()}</span>
             </div>
           </div>
 
@@ -171,10 +175,10 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
               District Coverage Target: {districts}
             </div>
             <p className="text-[11px] text-muted-foreground leading-relaxed">
-              Based on {districts} districts, providing quality education to approximately {(totalStudents / 100000).toFixed(1)} Lakh children simultaneously (540 per school).
+              Based on {districts} districts, providing quality education and boarding to approximately {(totalStudents / 100000).toFixed(1)} Lakh children simultaneously (540 per school).
             </p>
             <p className="text-[11px] text-muted-foreground leading-relaxed">
-              Employing {totalTeachers.toLocaleString()} teachers and {totalStaff.toLocaleString()} non-teaching staff, paying ₹{(monthlyPayroll / 10000000).toFixed(2)} Crore in monthly salaries across India.
+              Employing {totalTeachers.toLocaleString()} teachers and {totalStaff.toLocaleString()} total staff, paying ₹{(monthlyPayroll / 10000000).toFixed(2)} Crore in monthly salaries across India.
             </p>
           </div>
         </CardContent>
