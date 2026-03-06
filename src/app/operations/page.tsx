@@ -83,7 +83,6 @@ export default function OperationsPage() {
                             <TableHead>Teachers</TableHead>
                             <TableHead>Monthly Salary</TableHead>
                             <TableHead className="text-right">Total Monthly</TableHead>
-                            <TableHead className="text-right">Setup Cost</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -96,7 +95,6 @@ export default function OperationsPage() {
                               <TableCell>{s.count}</TableCell>
                               <TableCell>₹{s.salary.toLocaleString()}</TableCell>
                               <TableCell className="text-right font-code font-bold">₹{s.total.toLocaleString()}</TableCell>
-                              <TableCell className="text-right font-code text-muted-foreground">₹{s.setup.toLocaleString()}</TableCell>
                             </TableRow>
                           ))}
                         </TableBody>
