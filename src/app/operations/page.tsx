@@ -2,7 +2,7 @@
 
 import {Card, CardContent, CardHeader, CardTitle, CardDescription} from '@/components/ui/card';
 import {SIMULATION_CONSTANTS} from '@/lib/simulation-logic';
-import {ArrowRight, School, MapPin, Layers, Info, Trash2, Sparkles, Award, Droplets, Users, Wind, Waves, FlaskConical, Bed} from 'lucide-react';
+import {ArrowRight, School, MapPin, Layers, Info, Trash2, Sparkles, Award, Droplets, Users, Wind, Waves, FlaskConical, Bed, GraduationCap, Building2, Briefcase} from 'lucide-react';
 import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from '@/components/ui/dialog';
 import {Button} from '@/components/ui/button';
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '@/components/ui/table';
@@ -111,7 +111,7 @@ export default function OperationsPage() {
                             <TableHead>Unit/Count</TableHead>
                             <TableHead>Rate/Monthly</TableHead>
                             <TableHead className="text-right">Total</TableHead>
-                          </TableRow>
+                          </TableHeader>
                         </TableHeader>
                         <TableBody>
                           {bd.BOARDING.map((b, idx) => (
@@ -229,7 +229,6 @@ export default function OperationsPage() {
             </CardContent>
           </Card>
           
-          {/* ... rest of the file ... */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -383,6 +382,77 @@ export default function OperationsPage() {
         </div>
 
         <aside className="space-y-6">
+          <Card className="border-l-4 border-l-orange-500 bg-orange-50/10">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <GraduationCap className="w-5 h-5 text-orange-500" />
+                The Sarva Fellow Model
+              </CardTitle>
+              <CardDescription className="text-xs uppercase tracking-wider font-bold">
+                Elite Recruitment Strategy
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-xs leading-relaxed text-muted-foreground">
+                India has a massive pool of high-caliber graduates preparing for UPSC and KVS exams. Sarva recruits these toppers as **"Sarva Fellows"**.
+              </p>
+              <div className="space-y-3">
+                <div className="p-3 bg-white border rounded shadow-sm">
+                  <h5 className="text-[10px] font-bold uppercase flex items-center gap-1 text-orange-700">
+                    <Briefcase className="w-3 h-3" />
+                    Dignified Livelihood
+                  </h5>
+                  <p className="text-[10px] text-muted-foreground mt-1">
+                    Providing a salary of ₹35k-₹55k plus accommodation. This allows aspirants to serve the nation while continuing their studies.
+                  </p>
+                </div>
+                <div className="p-3 bg-white border rounded shadow-sm">
+                  <h5 className="text-[10px] font-bold uppercase flex items-center gap-1 text-orange-700">
+                    <Users className="w-3 h-3" />
+                    Grassroots Leadership
+                  </h5>
+                  <p className="text-[10px] text-muted-foreground mt-1">
+                    Fellows don't just teach; they manage the institution's civic impact, from water hubs to clean air R&D projects.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-l-4 border-l-indigo-500 bg-indigo-50/10">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Building2 className="w-5 h-5 text-indigo-500" />
+                The 0.1% Corporate Pledge
+              </CardTitle>
+              <CardDescription className="text-xs uppercase tracking-wider font-bold">
+                Macro-Scale Business Impact
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-xs leading-relaxed text-muted-foreground">
+                If every registered business in India pledged just **0.1% of their annual profit**, the structural change would be unstoppable.
+              </p>
+              <div className="space-y-2 py-2">
+                <div className="flex justify-between text-[10px] border-b pb-1">
+                  <span className="font-medium">Estimated Annual Profit Pool</span>
+                  <span className="font-bold">₹25,00,000 Cr+</span>
+                </div>
+                <div className="flex justify-between text-[10px] border-b pb-1">
+                  <span className="font-medium">0.1% Annual Pledge</span>
+                  <span className="font-bold text-indigo-700">₹2,500 Cr</span>
+                </div>
+                <div className="flex justify-between text-[10px] border-b pb-1">
+                  <span className="font-medium">Potential Institutions/Year</span>
+                  <span className="font-bold text-primary">~2,700 Full Schools</span>
+                </div>
+              </div>
+              <div className="bg-indigo-600 text-white p-3 rounded text-[10px] font-bold text-center">
+                This would cover EVERY district in India 3 times over in a single year.
+              </div>
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <CardTitle className="text-sm uppercase tracking-widest text-muted-foreground">Standard School Capacity</CardTitle>
@@ -420,8 +490,8 @@ export default function OperationsPage() {
 
           <div className="bg-primary text-primary-foreground p-6 rounded-lg space-y-4">
             <Bed className="w-8 h-8 opacity-50" />
-            <h4 className="font-bold">Holistic Boarding Model</h4>
-            <p className="text-xs leading-relaxed opacity-80">
+            <h4 className="font-bold text-sm">Holistic Boarding Model</h4>
+            <p className="text-[10px] leading-relaxed opacity-80">
               The boarding model ensures that children from remote areas have access to quality education, safe housing, and nutritious meals at zero cost to their families.
             </p>
           </div>
