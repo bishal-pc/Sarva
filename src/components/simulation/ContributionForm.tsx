@@ -21,6 +21,7 @@ const STATES = [
 export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => void}) {
   const [amount, setAmount] = useState<number>(SIMULATION_CONSTANTS.MIN_CONTRIBUTION);
   const [state, setState] = useState<string>("");
+  const [district, setDistrict] = useState<string>("");
   const [hasContributed, setHasContributed] = useState(false);
   const {toast} = useToast();
 
@@ -37,6 +38,16 @@ export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => vo
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!state) {
+      toast({
+        variant: "destructive",
+        title: "State Required",
+        description: "Please select your state to continue the simulation.",
+      });
+      return;
+    }
+
     if (amount < SIMULATION_CONSTANTS.MIN_CONTRIBUTION || amount > SIMULATION_CONSTANTS.MAX_CONTRIBUTION) {
       toast({
         variant: "destructive",
@@ -51,7 +62,7 @@ export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => vo
     onSuccess(amount);
     toast({
       title: "Virtual Contribution Submitted",
-      description: `Thank you for contributing ₹${amount} to the simulation.`,
+      description: `Thank you for contributing ₹${amount} from ${state}${district ? `, ${district}` : ''}.`,
     });
   };
 
@@ -98,8 +109,9 @@ export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => vo
               Min: ₹{SIMULATION_CONSTANTS.MIN_CONTRIBUTION} | Max: ₹{SIMULATION_CONSTANTS.MAX_CONTRIBUTION}
             </p>
           </div>
+          
           <div className="space-y-2">
-            <Label htmlFor="state">State (Optional)</Label>
+            <Label htmlFor="state">State</Label>
             <Select onValueChange={setState} value={state}>
               <SelectTrigger>
                 <SelectValue placeholder="Select your state" />
@@ -111,6 +123,17 @@ export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => vo
               </SelectContent>
             </Select>
           </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="district">District (Optional)</Label>
+            <Input
+              id="district"
+              placeholder="Enter your district"
+              value={district}
+              onChange={(e) => setDistrict(e.target.value)}
+            />
+          </div>
+
           <Button type="submit" className="w-full bg-primary hover:bg-primary/90">
             Submit to Simulation
           </Button>

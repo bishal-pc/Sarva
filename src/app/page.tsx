@@ -11,7 +11,7 @@ import {suggestSimulatedFundAllocation} from '@/ai/flows/suggest-simulated-fund-
 import {Separator} from '@/components/ui/separator';
 import {Github, ExternalLink, ShieldCheck} from 'lucide-react';
 
-// Initial dummy data to represent Firestore state
+// Initial dummy data to represent state
 const INITIAL_STATS = {
   participants: 12430,
   pool: 783090,
@@ -22,12 +22,15 @@ export default function Home() {
   const [districtData, setDistrictData] = useState<DistrictExpansionOutput | undefined>();
   const [aiSuggestion, setAiSuggestion] = useState<string>("");
   const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<string>("");
 
   const allocation = calculateAllocation(stats.pool);
 
   useEffect(() => {
-    // Set the last updated date on mount to avoid hydration mismatch
+    setMounted(true);
+    // Use fixed seed or static date for hydration consistency if needed, 
+    // but useEffect is safer for real current date.
     setLastUpdated(new Date().toLocaleDateString());
   }, []);
 
@@ -42,7 +45,7 @@ export default function Home() {
         setDistrictData(districts);
         setAiSuggestion(suggestion.suggestion);
       } catch (e) {
-        console.error("AI load error", e);
+        // Silently fail as it's a simulation
       } finally {
         setLoading(false);
       }
@@ -118,7 +121,7 @@ export default function Home() {
                 </div>
                 <div className="flex justify-between items-center border-b pb-2">
                   <span className="text-muted-foreground">Last Updated</span>
-                  <span>{lastUpdated || 'Loading...'}</span>
+                  <span>{mounted ? lastUpdated : 'Loading...'}</span>
                 </div>
                 <div className="flex justify-between items-center border-b pb-2">
                   <span className="text-muted-foreground">Git Hash</span>
