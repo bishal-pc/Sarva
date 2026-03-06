@@ -61,6 +61,17 @@ export default function ConstitutionPage() {
                 </section>
 
                 <section>
+                  <h3 className="text-xl font-bold mb-4 uppercase border-l-4 border-primary pl-4">Article 2 — Constitutional Preamble</h3>
+                  <div className="space-y-4">
+                    <p>Sarva is founded on the recognition that human dignity requires certain non-negotiable conditions.</p>
+                    <p>Education, safe drinking water, clean air, and clean public spaces are not commodities, privileges, or rewards. They are preconditions of a civilized society.</p>
+                    <p>When access to these essentials is determined by wealth, society fails its moral duty.</p>
+                    <p>Therefore, in the exercise of collective responsibility and restraint of personal ambition, Sarva is established as a public trust dedicated to guaranteeing these essentials free at the point of use, without extraction, exploitation, discrimination, or monetization.</p>
+                    <p>This Constitution binds all founders, trustees, custodians, employees, affiliates, and successors of Sarva, present and future.</p>
+                  </div>
+                </section>
+
+                <section>
                   <h3 className="text-xl font-bold mb-4 uppercase border-l-4 border-primary pl-4">Article 3 — Objects and Purpose (Purpose Lock)</h3>
                   <div className="space-y-2">
                     <p>3.1 Sarva shall pursue only the following objectives:</p>
