@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { SIMULATION_CONSTANTS, ResourceAllocation } from '@/lib/simulation-logic';
-import { Globe, GraduationCap, Map, ArrowRight, Info, IndianRupee } from 'lucide-react';
+import { Globe, GraduationCap, Map, ArrowRight, Info, IndianRupee, Clock } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Slider } from '@/components/ui/slider';
 
@@ -22,6 +22,12 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
   const dynamicNeededClass10 = Math.ceil(SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_10.monthlyRequirement / amount);
   const dynamicNeededClass12 = Math.ceil(SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.monthlyRequirement / amount);
   const dynamicCitizensForAll = dynamicNeededClass12 * districts;
+
+  // Time to collect setup cost (in months)
+  // This is constant relative to the citizen count needed for monthly sustenance
+  const timeClass8 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_8.setupCost / SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_8.monthlyRequirement).toFixed(1);
+  const timeClass10 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_10.setupCost / SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_10.monthlyRequirement).toFixed(1);
+  const timeClass12 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.setupCost / SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.monthlyRequirement).toFixed(1);
 
   // National impact stats
   const totalStudents = districts * 540;
@@ -51,7 +57,7 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
                     <strong>Formula:</strong> Monthly Operating Cost ÷ Selected Per-Citizen Contribution (₹{amount}).
                   </p>
                   <p className="text-[10px] leading-relaxed">
-                    This model visualizes how a small, consistent micro-contribution can scale to meet the national demand for institutional civic infrastructure.
+                    <strong>Setup Phase:</strong> The time shown is how long it takes the required citizens to raise the setup capital before monthly operations begin.
                   </p>
                 </TooltipContent>
               </Tooltip>
@@ -86,12 +92,18 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
           </div>
 
           <div className="space-y-4">
+            {/* Milestone 1 */}
             <div className="flex justify-between items-center p-3 bg-muted/20 rounded-lg border">
               <div className="space-y-1">
                 <span className="text-xs font-bold uppercase text-muted-foreground">Class 1-8 Milestone</span>
                 <div className="flex flex-col">
                   <span className="text-[10px] text-muted-foreground">Monthly: ₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_8.monthlyRequirement.toLocaleString()}/mo</span>
-                  <span className="text-[10px] text-primary/70 font-semibold italic">One-time Setup: ₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_8.setupCost.toLocaleString()}</span>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <span className="text-[10px] text-primary/70 font-semibold italic">Setup: ₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_8.setupCost.toLocaleString()}</span>
+                    <span className="text-[9px] bg-primary/10 text-primary px-1 rounded flex items-center gap-0.5">
+                      <Clock className="w-2 h-2" /> ~{timeClass8} Months
+                    </span>
+                  </div>
                 </div>
               </div>
               <div className="text-right">
@@ -99,12 +111,19 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
                 <div className="text-[10px] text-muted-foreground uppercase">Citizens Needed</div>
               </div>
             </div>
+
+            {/* Milestone 2 */}
             <div className="flex justify-between items-center p-3 bg-muted/20 rounded-lg border">
               <div className="space-y-1">
                 <span className="text-xs font-bold uppercase text-muted-foreground">Class 1-10 Milestone</span>
                 <div className="flex flex-col">
                   <span className="text-[10px] text-muted-foreground">Monthly: ₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_10.monthlyRequirement.toLocaleString()}/mo</span>
-                  <span className="text-[10px] text-primary/70 font-semibold italic">One-time Setup: ₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_10.setupCost.toLocaleString()}</span>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <span className="text-[10px] text-primary/70 font-semibold italic">Setup: ₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_10.setupCost.toLocaleString()}</span>
+                    <span className="text-[9px] bg-primary/10 text-primary px-1 rounded flex items-center gap-0.5">
+                      <Clock className="w-2 h-2" /> ~{timeClass10} Months
+                    </span>
+                  </div>
                 </div>
               </div>
               <div className="text-right">
@@ -112,12 +131,19 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
                 <div className="text-[10px] text-muted-foreground uppercase">Citizens Needed</div>
               </div>
             </div>
+
+            {/* Milestone 3 */}
             <div className="flex justify-between items-center p-3 bg-muted/20 rounded-lg border">
               <div className="space-y-1">
                 <span className="text-xs font-bold uppercase text-muted-foreground">Full Class 12 (3 Streams)</span>
                 <div className="flex flex-col">
                   <span className="text-[10px] text-muted-foreground">Monthly: ₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.monthlyRequirement.toLocaleString()}/mo</span>
-                  <span className="text-[10px] text-primary/70 font-semibold italic">One-time Setup: ₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.setupCost.toLocaleString()}</span>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <span className="text-[10px] text-primary/70 font-semibold italic">Setup: ₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.setupCost.toLocaleString()}</span>
+                    <span className="text-[9px] bg-primary/10 text-primary px-1 rounded flex items-center gap-0.5">
+                      <Clock className="w-2 h-2" /> ~{timeClass12} Months
+                    </span>
+                  </div>
                 </div>
               </div>
               <div className="text-right">
@@ -125,6 +151,8 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
                 <div className="text-[10px] text-muted-foreground uppercase">Citizens Needed</div>
               </div>
             </div>
+
+            {/* Total National Goal */}
             <div className="flex justify-between items-center p-4 bg-primary text-primary-foreground rounded-lg shadow-md">
               <span className="text-xs font-bold uppercase tracking-widest">1 School in Every District</span>
               <div className="text-right">
