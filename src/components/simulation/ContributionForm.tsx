@@ -15,7 +15,9 @@ const STATES = [
   "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", 
   "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", 
   "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", 
-  "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal"
+  "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
+  "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu", 
+  "Delhi", "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry"
 ];
 
 export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => void}) {
@@ -115,10 +117,10 @@ export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => vo
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="state">State</Label>
+            <Label htmlFor="state">State / Union Territory</Label>
             <Select onValueChange={setState} value={state}>
               <SelectTrigger>
-                <SelectValue placeholder="Select your state" />
+                <SelectValue placeholder="Select state or UT" />
               </SelectTrigger>
               <SelectContent>
                 {STATES.map((s) => (
