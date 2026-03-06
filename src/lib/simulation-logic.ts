@@ -11,9 +11,9 @@ export const SIMULATION_CONSTANTS = {
   OPERATIONAL_TARGETS: {
     CLASS_8: {
       label: "Milestone 1: Primary to Class 8",
-      monthlyRequirement: 900000,
+      monthlyRequirement: 980000,
       setupCost: 2000000,
-      description: "Covers 11 teachers (Primary & Middle), principal, admin, support staff, and rent.",
+      description: "Covers 11 teachers (incl. Computer Literacy & Regional Language), principal, admin, and support staff.",
       setupBreakdown: [
         { item: "Classroom Furniture (8 rooms)", cost: 640000 },
         { item: "Library & Office Setup", cost: 500000 },
@@ -23,9 +23,9 @@ export const SIMULATION_CONSTANTS = {
     },
     CLASS_10: {
       label: "Milestone 2: Secondary to Class 10",
-      monthlyRequirement: 1280000,
+      monthlyRequirement: 1400000,
       setupCost: 4000000,
-      description: "Adds 7 secondary teachers and specialized lab facilities.",
+      description: "Adds 7 secondary teachers for specialized Math/Science and secondary-level Computer Science.",
       setupBreakdown: [
         { item: "Classroom Furniture (2 rooms)", cost: 160000 },
         { item: "Computer Lab (20 systems)", cost: 1000000 },
@@ -35,9 +35,9 @@ export const SIMULATION_CONSTANTS = {
     },
     CLASS_12: {
       label: "Milestone 3: Senior Secondary (3 Streams)",
-      monthlyRequirement: 2140000,
+      monthlyRequirement: 2200000,
       setupCost: 6500000,
-      description: "Full capacity with Science, Arts, and Commerce streams (33 total teachers).",
+      description: "Full capacity with Science (incl. Computer Science), Arts, and Commerce (34 total teachers).",
       setupBreakdown: [
         { item: "Classroom Furniture (6 rooms)", cost: 480000 },
         { item: "Science Labs (Phy/Chem/Bio)", cost: 1200000 },
@@ -53,7 +53,7 @@ export const SIMULATION_CONSTANTS = {
       { level: "Secondary (9-10)", count: 7, salary: 45000, total: 315000 },
     ],
     STREAMS: [
-      { name: "Science", count: 5, salary: 55000, total: 310000, description: "Physics, Chem, Bio, Math, English" },
+      { name: "Science", count: 6, salary: 55000, total: 365000, description: "Physics, Chem, Bio, Math, English, Computer Science" },
       { name: "Arts", count: 5, salary: 50000, total: 270000, description: "History, Pol Sci, Geog, Soc/Psych, English" },
       { name: "Commerce", count: 5, salary: 50000, total: 280000, description: "Accounts, B.St, Economics, Math, English" },
     ],
@@ -67,7 +67,6 @@ export const SIMULATION_CONSTANTS = {
       { item: "Electricity & Utilities", monthly: 40000 },
       { item: "Internet & Software", monthly: 10000 },
       { item: "Maintenance & Misc", monthly: 30000 },
-      { item: "Stream Labs/Utils", monthly: 70000 },
     ]
   }
 };
@@ -89,7 +88,7 @@ export function calculateAllocation(totalPool: number): ResourceAllocation {
   // We use the Class 12 target as the gold standard for a "Full Capacity" school
   const schoolCostWithTeachers = SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.monthlyRequirement;
   const schools = Math.floor(educationPool / schoolCostWithTeachers);
-  const teachers = schools * 33; // Full strength (18 + 15 from 3 streams)
+  const teachers = schools * 34; // Full strength (18 + 16 from 3 streams incl. CS)
 
   const sanitationWorkers = Math.floor(sanitationPool / SIMULATION_CONSTANTS.COSTS.SANITATION_WORKER);
   const waterHubs = Math.floor(waterPool / SIMULATION_CONSTANTS.COSTS.WATER_HUB_SETUP);

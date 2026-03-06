@@ -286,7 +286,7 @@ export default function OperationsPage() {
                 </div>
                 <div className="flex items-center justify-between text-xs border-b pb-2">
                   <span>Teachers (Full)</span>
-                  <span className="font-bold">33</span>
+                  <span className="font-bold">34</span>
                 </div>
                 <div className="flex items-center justify-between text-xs border-b pb-2">
                   <span>Support Staff</span>
@@ -299,7 +299,7 @@ export default function OperationsPage() {
               </div>
               <div className="pt-4 space-y-2">
                 <h5 className="text-[10px] font-bold uppercase text-muted-foreground">Operating Cost Per Student</h5>
-                <div className="text-xl font-code font-bold text-primary">₹3,815<span className="text-[10px] font-normal text-muted-foreground">/mo</span></div>
+                <div className="text-xl font-code font-bold text-primary">₹4,074<span className="text-[10px] font-normal text-muted-foreground">/mo</span></div>
                 <p className="text-[10px] text-muted-foreground italic">Significantly lower than average private institutions with comparable standards.</p>
               </div>
             </CardContent>
