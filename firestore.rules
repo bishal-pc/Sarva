@@ -1,0 +1,22 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global stats are publicly readable and updatable via atomic increments
+    match /stats/global {
+      allow read: if true;
+      allow write: if true;
+    }
+    
+    // Contributions are anonymous and publicly writeable (limited by device storage logic in UI)
+    match /contributions/{contributionId} {
+      allow read: if true;
+      allow create: if true;
+    }
+    
+    // Forum posts are public and do not require authentication
+    match /forum_posts/{postId} {
+      allow read: if true;
+      allow create: if true;
+    }
+  }
+}
