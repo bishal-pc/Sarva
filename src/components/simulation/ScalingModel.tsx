@@ -24,12 +24,11 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
   const dynamicNeededClass12 = Math.ceil(SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.monthlyRequirement / amount);
   const dynamicCitizensForAll = dynamicNeededClass12 * districts;
 
-  // Time to collect setup cost (in months)
-  // Logic: How long for our CURRENT simulation participants to raise the setup capital at this rate.
-  const activeParticipants = Math.max(1, totalParticipants);
-  const timeClass8 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_8.setupCost / (activeParticipants * amount)).toFixed(1);
-  const timeClass10 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_10.setupCost / (activeParticipants * amount)).toFixed(1);
-  const timeClass12 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.setupCost / (activeParticipants * amount)).toFixed(1);
+  // Time to collect setup cost (in months) based on the group needed for sustenance
+  // Logic: (Setup Cost) / (Group Size * Selected Amount)
+  const timeClass8 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_8.setupCost / (dynamicNeededClass8 * amount)).toFixed(1);
+  const timeClass10 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_10.setupCost / (dynamicNeededClass10 * amount)).toFixed(1);
+  const timeClass12 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.setupCost / (dynamicNeededClass12 * amount)).toFixed(1);
 
   // National impact stats
   const totalStudents = districts * 540;
@@ -61,7 +60,7 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
                     <strong>Sustenance:</strong> Total citizens required to meet the monthly operating budget at ₹{amount}/month.
                   </p>
                   <p className="text-[10px] leading-relaxed">
-                    <strong>Setup Phase:</strong> Estimated months for the <u>current {activeParticipants} participants</u> to raise the setup capital at ₹{amount}/month.
+                    <strong>Setup Phase:</strong> Estimated months for the <u>required sustenance group</u> to raise the setup capital at ₹{amount}/month.
                   </p>
                 </TooltipContent>
               </Tooltip>
