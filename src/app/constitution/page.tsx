@@ -54,7 +54,7 @@ export default function ConstitutionPage() {
                   <div className="space-y-2">
                     <p>1.1 The institution shall be known as Sarva Public Trust, hereinafter referred to as "Sarva".</p>
                     <p>1.2 Sarva is constituted as an irrevocable public charitable trust, non-profit in nature, established exclusively for public benefit.</p>
-                    <p>1.3 Sarva shall operate within the territory of India, with its initial registered office in Guwahati, Kamrup Metropolitan District, Assam.</p>
+                    <p>1.3 Sarva shall operate within the territory of India, with its initial proposed office in Guwahati, Kamrup Metropolitan District, Assam.</p>
                     <p>1.4 Sarva shall not exist for private gain, commercial profit, or personal enrichment of any individual.</p>
                   </div>
                 </section>
