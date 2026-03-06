@@ -25,18 +25,18 @@ export function Navigation() {
           </div>
           <span>SARVA</span>
         </Link>
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-6 overflow-x-auto no-scrollbar">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
-                "text-sm font-medium transition-colors hover:text-primary flex items-center gap-2",
+                "text-sm font-medium transition-colors hover:text-primary flex items-center gap-2 whitespace-nowrap",
                 pathname === item.href ? "text-primary" : "text-muted-foreground"
               )}
             >
               <item.icon className="w-4 h-4" />
-              <span className="hidden lg:inline">{item.name}</span>
+              <span>{item.name}</span>
             </Link>
           ))}
         </div>
