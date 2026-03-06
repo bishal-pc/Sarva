@@ -1,3 +1,4 @@
+
 "use client";
 
 import {useState, useEffect} from 'react';
@@ -9,6 +10,10 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/c
 import {SIMULATION_CONSTANTS} from '@/lib/simulation-logic';
 import {useToast} from '@/hooks/use-toast';
 import {Coins, Info} from 'lucide-react';
+import {useFirestore} from '@/firebase';
+import {collection, doc, addDoc, setDoc, increment, serverTimestamp} from 'firebase/firestore';
+import {errorEmitter} from '@/firebase/error-emitter';
+import {FirestorePermissionError} from '@/firebase/errors';
 
 const STATES = [
   "Andaman and Nicobar Islands",
@@ -55,13 +60,13 @@ export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => vo
   const [district, setDistrict] = useState<string>("");
   const [hasContributed, setHasContributed] = useState(false);
   const {toast} = useToast();
+  const firestore = useFirestore();
 
   useEffect(() => {
     const lastContribution = localStorage.getItem('sarva_last_contribution');
     if (lastContribution) {
       const date = new Date(lastContribution);
       const now = new Date();
-      // Enforce one contribution per month per device
       if (date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear()) {
         setHasContributed(true);
       }
@@ -89,9 +94,45 @@ export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => vo
       return;
     }
 
+    if (!firestore) return;
+
+    const contributionData = {
+      amount,
+      state,
+      district: district || "",
+      timestamp: serverTimestamp(),
+    };
+
+    const contributionsRef = collection(firestore, 'contributions');
+    const statsRef = doc(firestore, 'stats', 'global');
+
+    // 1. Log the individual contribution
+    addDoc(contributionsRef, contributionData)
+      .catch(async (error) => {
+        errorEmitter.emit('permission-error', new FirestorePermissionError({
+          path: contributionsRef.path,
+          operation: 'create',
+          requestResourceData: contributionData,
+        }));
+      });
+
+    // 2. Increment global stats
+    setDoc(statsRef, {
+      totalPool: increment(amount),
+      totalParticipants: increment(1)
+    }, { merge: true })
+      .catch(async (error) => {
+        errorEmitter.emit('permission-error', new FirestorePermissionError({
+          path: statsRef.path,
+          operation: 'update',
+          requestResourceData: { totalPool: amount, totalParticipants: 1 },
+        }));
+      });
+
     localStorage.setItem('sarva_last_contribution', new Date().toISOString());
     setHasContributed(true);
     onSuccess(amount);
+    
     toast({
       title: "Virtual Contribution Submitted",
       description: `Thank you for contributing ₹${amount} from ${state}${district ? `, ${district}` : ''}.`,

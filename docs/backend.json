@@ -1,0 +1,55 @@
+
+{
+  "entities": {
+    "Contribution": {
+      "title": "Contribution",
+      "description": "A virtual contribution entry for the simulation.",
+      "type": "object",
+      "properties": {
+        "amount": { "type": "number" },
+        "state": { "type": "string" },
+        "district": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["amount", "state", "timestamp"]
+    },
+    "ForumPost": {
+      "title": "Forum Post",
+      "description": "A public message on the civic forum.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "state": { "type": "string" },
+        "content": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "state", "content", "createdAt"]
+    },
+    "GlobalStats": {
+      "title": "Global Stats",
+      "description": "Aggregated simulation statistics.",
+      "type": "object",
+      "properties": {
+        "totalPool": { "type": "number" },
+        "totalParticipants": { "type": "number" }
+      }
+    }
+  },
+  "auth": {
+    "providers": []
+  },
+  "firestore": {
+    "/contributions/{contributionId}": {
+      "schema": "Contribution",
+      "description": "Collection of anonymous virtual contributions."
+    },
+    "/forum_posts/{postId}": {
+      "schema": "ForumPost",
+      "description": "Public messages posted by citizens."
+    },
+    "/stats/global": {
+      "schema": "GlobalStats",
+      "description": "Global real-time counters for the simulation."
+    }
+  }
+}

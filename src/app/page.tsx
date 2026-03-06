@@ -1,6 +1,7 @@
+
 "use client";
 
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useMemo} from 'react';
 import {DashboardStats} from '@/components/simulation/DashboardStats';
 import {ContributionForm} from '@/components/simulation/ContributionForm';
 import {ResourceDisplay} from '@/components/simulation/ResourceDisplay';
@@ -9,39 +10,35 @@ import {ScalingModel} from '@/components/simulation/ScalingModel';
 import {calculateAllocation, SIMULATION_CONSTANTS} from '@/lib/simulation-logic';
 import {Separator} from '@/components/ui/separator';
 import {Github, ExternalLink, ShieldCheck, Wallet, Info} from 'lucide-react';
-
-const INITIAL_STATS = {
-  participants: 0,
-  pool: 0,
-};
+import {useDoc, useFirestore} from '@/firebase';
+import {doc} from 'firebase/firestore';
 
 export default function Home() {
-  const [stats, setStats] = useState(INITIAL_STATS);
+  const firestore = useFirestore();
   const [mounted, setMounted] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<string>("");
+
+  const statsRef = useMemo(() => {
+    if (!firestore) return null;
+    return doc(firestore, 'stats', 'global');
+  }, [firestore]);
+
+  const { data: statsData, loading } = useDoc(statsRef);
+
+  const stats = {
+    participants: statsData?.totalParticipants || 0,
+    pool: statsData?.totalPool || 0,
+  };
 
   const allocation = calculateAllocation(stats.pool, stats.participants);
 
   useEffect(() => {
     setMounted(true);
     setLastUpdated(new Date().toLocaleDateString());
-    
-    // Load persisted stats if any (simulating a backend with local storage for this demo)
-    const savedStats = localStorage.getItem('sarva_sim_stats');
-    if (savedStats) {
-      setStats(JSON.parse(savedStats));
-    }
   }, []);
 
   const handleNewContribution = (amount: number) => {
-    setStats(prev => {
-      const newStats = {
-        participants: prev.participants + 1,
-        pool: prev.pool + amount
-      };
-      localStorage.setItem('sarva_sim_stats', JSON.stringify(newStats));
-      return newStats;
-    });
+    // Stats will update via Firestore listener automatically
   };
 
   return (
@@ -77,7 +74,9 @@ export default function Home() {
         <div className="flex flex-col md:flex-row justify-between items-end gap-4">
           <div className="space-y-1">
             <h2 className="text-2xl font-bold tracking-tight">Real-time Simulation Dashboard</h2>
-            <p className="text-sm text-muted-foreground">Aggregated data from {stats.participants.toLocaleString()} virtual participants.</p>
+            <p className="text-sm text-muted-foreground">
+              {loading ? 'Refreshing data...' : `Aggregated data from ${stats.participants.toLocaleString()} virtual participants.`}
+            </p>
           </div>
         </div>
         
