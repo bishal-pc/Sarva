@@ -130,7 +130,7 @@ export default function Home() {
             <div>
               <h3 className="text-lg font-bold mb-6 uppercase tracking-widest text-muted-foreground/60">National Scaling & Recruitment</h3>
               <ScalingModel 
-                citizensNeededPerSchool={allocation.citizensNeededPerSchool} 
+                allocation={allocation} 
                 totalParticipants={stats.participants}
               />
             </div>

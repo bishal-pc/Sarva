@@ -80,7 +80,9 @@ export type ResourceAllocation = {
   waterHubs: number;
   airResearchUnits: number;
   remainingForNextSchool: number;
-  citizensNeededPerSchool: number;
+  citizensNeededClass8: number;
+  citizensNeededClass10: number;
+  citizensNeededClass12: number;
 };
 
 export function calculateAllocation(totalPool: number, totalParticipants: number): ResourceAllocation {
@@ -93,8 +95,11 @@ export function calculateAllocation(totalPool: number, totalParticipants: number
   const schools = Math.floor(educationPool / schoolCost);
   const remainingForNextSchool = schoolCost - (educationPool % schoolCost);
   
-  const averageContribution = totalParticipants > 0 ? totalPool / totalParticipants : 250;
-  const citizensNeededPerSchool = Math.ceil(schoolCost / averageContribution);
+  // Base calculation on user's request: Assume ₹10 per person
+  const baseDonation = 10;
+  const citizensNeededClass8 = Math.ceil(SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_8.monthlyRequirement / baseDonation);
+  const citizensNeededClass10 = Math.ceil(SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_10.monthlyRequirement / baseDonation);
+  const citizensNeededClass12 = Math.ceil(SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.monthlyRequirement / baseDonation);
 
   const teachers = schools * 34;
   const sanitationWorkers = Math.floor(sanitationPool / SIMULATION_CONSTANTS.COSTS.SANITATION_WORKER);
@@ -108,6 +113,8 @@ export function calculateAllocation(totalPool: number, totalParticipants: number
     waterHubs,
     airResearchUnits,
     remainingForNextSchool,
-    citizensNeededPerSchool
+    citizensNeededClass8,
+    citizensNeededClass10,
+    citizensNeededClass12
   };
 }

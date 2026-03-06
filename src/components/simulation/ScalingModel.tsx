@@ -1,20 +1,18 @@
-
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { SIMULATION_CONSTANTS } from '@/lib/simulation-logic';
-import { Globe, Users, GraduationCap, Map, ArrowRight, Info } from 'lucide-react';
+import { SIMULATION_CONSTANTS, ResourceAllocation } from '@/lib/simulation-logic';
+import { Globe, GraduationCap, Map, ArrowRight, Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface ScalingModelProps {
-  citizensNeededPerSchool: number;
+  allocation: ResourceAllocation;
   totalParticipants: number;
 }
 
-export function ScalingModel({ citizensNeededPerSchool, totalParticipants }: ScalingModelProps) {
+export function ScalingModel({ allocation, totalParticipants }: ScalingModelProps) {
   const districts = SIMULATION_CONSTANTS.TOTAL_DISTRICTS_INDIA;
-  const citizensForTen = citizensNeededPerSchool * 10;
-  const citizensForAll = citizensNeededPerSchool * districts;
+  const citizensForAll = allocation.citizensNeededClass12 * districts;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -33,34 +31,50 @@ export function ScalingModel({ citizensNeededPerSchool, totalParticipants }: Sca
                   </button>
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs p-4 space-y-2">
-                  <p className="font-bold text-xs uppercase">How we calculate this:</p>
+                  <p className="font-bold text-xs uppercase">Calculation Logic:</p>
                   <p className="text-[10px] leading-relaxed">
-                    <strong>Citizens Needed</strong> = Monthly School Cost (₹22L) ÷ Avg. Virtual Contribution.
+                    <strong>Formula:</strong> Monthly Cost ÷ ₹10 (Assumption: Every person contributes ₹10).
                   </p>
                   <p className="text-[10px] leading-relaxed">
-                    Scaling assumes one full Class 1-12 Sarva institution per district.
+                    This model visualizes how a small, consistent micro-contribution can scale to meet the national demand for institutional civic infrastructure.
                   </p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </div>
           <CardDescription>
-            Scaling from one district to every corner of India.
+            Scaling based on a ₹10/person monthly contribution.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-4">
             <div className="flex justify-between items-center p-3 bg-muted/20 rounded-lg border">
-              <span className="text-xs font-bold uppercase text-muted-foreground">To fund 1 School</span>
+              <div className="space-y-1">
+                <span className="text-xs font-bold uppercase text-muted-foreground">Class 1-8 Milestone</span>
+                <p className="text-[10px] text-muted-foreground">₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_8.monthlyRequirement.toLocaleString()}/mo</p>
+              </div>
               <div className="text-right">
-                <div className="text-lg font-code font-bold">{citizensNeededPerSchool.toLocaleString()}</div>
+                <div className="text-lg font-code font-bold">{allocation.citizensNeededClass8.toLocaleString()}</div>
                 <div className="text-[10px] text-muted-foreground uppercase">Citizens Needed</div>
               </div>
             </div>
             <div className="flex justify-between items-center p-3 bg-muted/20 rounded-lg border">
-              <span className="text-xs font-bold uppercase text-muted-foreground">To fund 10 Schools</span>
+              <div className="space-y-1">
+                <span className="text-xs font-bold uppercase text-muted-foreground">Class 1-10 Milestone</span>
+                <p className="text-[10px] text-muted-foreground">₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_10.monthlyRequirement.toLocaleString()}/mo</p>
+              </div>
               <div className="text-right">
-                <div className="text-lg font-code font-bold">{citizensForTen.toLocaleString()}</div>
+                <div className="text-lg font-code font-bold">{allocation.citizensNeededClass10.toLocaleString()}</div>
+                <div className="text-[10px] text-muted-foreground uppercase">Citizens Needed</div>
+              </div>
+            </div>
+            <div className="flex justify-between items-center p-3 bg-muted/20 rounded-lg border">
+              <div className="space-y-1">
+                <span className="text-xs font-bold uppercase text-muted-foreground">Class 1-12 (3 Streams)</span>
+                <p className="text-[10px] text-muted-foreground">₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.monthlyRequirement.toLocaleString()}/mo</p>
+              </div>
+              <div className="text-right">
+                <div className="text-lg font-code font-bold">{allocation.citizensNeededClass12.toLocaleString()}</div>
                 <div className="text-[10px] text-muted-foreground uppercase">Citizens Needed</div>
               </div>
             </div>
@@ -79,7 +93,7 @@ export function ScalingModel({ citizensNeededPerSchool, totalParticipants }: Sca
               District Coverage Target: {districts}
             </div>
             <p className="text-[11px] text-muted-foreground leading-relaxed">
-              Based on {districts} districts, providing quality education to approximately {(districts * 360 / 100000).toFixed(1)} Lakh children simultaneously (360 per school).
+              Based on {districts} districts, providing quality education to approximately {(districts * 540 / 100000).toFixed(1)} Lakh children simultaneously (540 per school).
             </p>
           </div>
         </CardContent>
