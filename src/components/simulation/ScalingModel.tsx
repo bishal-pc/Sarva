@@ -24,10 +24,11 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
   const dynamicCitizensForAll = dynamicNeededClass12 * districts;
 
   // Time to collect setup cost (in months)
-  // This is constant relative to the citizen count needed for monthly sustenance
-  const timeClass8 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_8.setupCost / SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_8.monthlyRequirement).toFixed(1);
-  const timeClass10 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_10.setupCost / SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_10.monthlyRequirement).toFixed(1);
-  const timeClass12 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.setupCost / SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.monthlyRequirement).toFixed(1);
+  // To make this dynamic and show efficiency gains, we use a fixed benchmark of 1 Lakh (100,000) citizens.
+  const benchmark = 100000;
+  const timeClass8 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_8.setupCost / (benchmark * amount)).toFixed(1);
+  const timeClass10 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_10.setupCost / (benchmark * amount)).toFixed(1);
+  const timeClass12 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.setupCost / (benchmark * amount)).toFixed(1);
 
   // National impact stats
   const totalStudents = districts * 540;
@@ -54,10 +55,10 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
                 <TooltipContent className="max-w-xs p-4 space-y-2">
                   <p className="font-bold text-xs uppercase">Calculation Logic:</p>
                   <p className="text-[10px] leading-relaxed">
-                    <strong>Formula:</strong> Monthly Operating Cost ÷ Selected Per-Citizen Contribution (₹{amount}).
+                    <strong>Sustenance:</strong> Number of citizens required to meet the monthly operating budget at ₹{amount}/month.
                   </p>
                   <p className="text-[10px] leading-relaxed">
-                    <strong>Setup Phase:</strong> The time shown is how long it takes the required citizens to raise the setup capital before monthly operations begin.
+                    <strong>Setup Phase:</strong> Time required for a benchmark population of 1 Lakh citizens to raise the initial capital at ₹{amount}/month.
                   </p>
                 </TooltipContent>
               </Tooltip>
