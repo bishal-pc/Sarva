@@ -118,7 +118,7 @@ export default function Home() {
                 </div>
                 <div className="flex justify-between items-center border-b pb-2">
                   <span className="text-muted-foreground">Last Updated</span>
-                  <span>{lastUpdated}</span>
+                  <span>{lastUpdated || 'Loading...'}</span>
                 </div>
                 <div className="flex justify-between items-center border-b pb-2">
                   <span className="text-muted-foreground">Git Hash</span>
