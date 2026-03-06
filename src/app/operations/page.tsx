@@ -111,7 +111,7 @@ export default function OperationsPage() {
                             <TableHead>Unit/Count</TableHead>
                             <TableHead>Rate/Monthly</TableHead>
                             <TableHead className="text-right">Total</TableHead>
-                          </TableHeader>
+                          </TableRow>
                         </TableHeader>
                         <TableBody>
                           {bd.BOARDING.map((b, idx) => (
