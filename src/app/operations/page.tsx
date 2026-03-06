@@ -1,6 +1,8 @@
+"use client";
+
 import {Card, CardContent, CardHeader, CardTitle, CardDescription} from '@/components/ui/card';
 import {SIMULATION_CONSTANTS} from '@/lib/simulation-logic';
-import {CheckCircle2, ArrowRight, School, MapPin, Layers, Info} from 'lucide-react';
+import {ArrowRight, School, MapPin, Layers, Info} from 'lucide-react';
 import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from '@/components/ui/dialog';
 import {Button} from '@/components/ui/button';
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '@/components/ui/table';
