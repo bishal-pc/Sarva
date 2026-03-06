@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { SIMULATION_CONSTANTS, ResourceAllocation } from '@/lib/simulation-logic';
-import { Globe, GraduationCap, Map, ArrowRight, Info } from 'lucide-react';
+import { Globe, GraduationCap, Map, ArrowRight, Info, IndianRupee } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Slider } from '@/components/ui/slider';
 
 interface ScalingModelProps {
   allocation: ResourceAllocation;
@@ -11,8 +13,15 @@ interface ScalingModelProps {
 }
 
 export function ScalingModel({ allocation, totalParticipants }: ScalingModelProps) {
+  const [perCitizenAmount, setPerCitizenAmount] = useState([10]);
   const districts = SIMULATION_CONSTANTS.TOTAL_DISTRICTS_INDIA;
-  const citizensForAll = allocation.citizensNeededClass12 * districts;
+  
+  // Dynamic calculations based on user input
+  const amount = perCitizenAmount[0];
+  const dynamicNeededClass8 = Math.ceil(SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_8.monthlyRequirement / amount);
+  const dynamicNeededClass10 = Math.ceil(SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_10.monthlyRequirement / amount);
+  const dynamicNeededClass12 = Math.ceil(SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.monthlyRequirement / amount);
+  const dynamicCitizensForAll = dynamicNeededClass12 * districts;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -33,7 +42,7 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
                 <TooltipContent className="max-w-xs p-4 space-y-2">
                   <p className="font-bold text-xs uppercase">Calculation Logic:</p>
                   <p className="text-[10px] leading-relaxed">
-                    <strong>Formula:</strong> Monthly Cost ÷ ₹10 (Assumption: Every person contributes ₹10).
+                    <strong>Formula:</strong> Monthly Operating Cost ÷ Selected Per-Citizen Contribution (₹{amount}).
                   </p>
                   <p className="text-[10px] leading-relaxed">
                     This model visualizes how a small, consistent micro-contribution can scale to meet the national demand for institutional civic infrastructure.
@@ -43,10 +52,33 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
             </TooltipProvider>
           </div>
           <CardDescription>
-            Scaling based on a ₹10/person monthly contribution.
+            Adjust the slider to see how many citizens are needed if everyone contributes a specific monthly amount.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-8">
+          {/* Interaction Slider */}
+          <div className="space-y-4 p-4 bg-primary/5 rounded-lg border border-primary/10">
+            <div className="flex justify-between items-center mb-2">
+              <label className="text-xs font-bold uppercase text-primary flex items-center gap-2">
+                <IndianRupee className="w-3 h-3" />
+                Per-Citizen Contribution
+              </label>
+              <span className="text-lg font-code font-black text-primary">₹{amount}</span>
+            </div>
+            <Slider
+              value={perCitizenAmount}
+              onValueChange={setPerCitizenAmount}
+              max={500}
+              min={10}
+              step={5}
+              className="py-4"
+            />
+            <div className="flex justify-between text-[10px] font-bold text-muted-foreground uppercase">
+              <span>Min: ₹10</span>
+              <span>Max: ₹500</span>
+            </div>
+          </div>
+
           <div className="space-y-4">
             <div className="flex justify-between items-center p-3 bg-muted/20 rounded-lg border">
               <div className="space-y-1">
@@ -54,7 +86,7 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
                 <p className="text-[10px] text-muted-foreground">₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_8.monthlyRequirement.toLocaleString()}/mo</p>
               </div>
               <div className="text-right">
-                <div className="text-lg font-code font-bold">{allocation.citizensNeededClass8.toLocaleString()}</div>
+                <div className="text-lg font-code font-bold">{dynamicNeededClass8.toLocaleString()}</div>
                 <div className="text-[10px] text-muted-foreground uppercase">Citizens Needed</div>
               </div>
             </div>
@@ -64,25 +96,27 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
                 <p className="text-[10px] text-muted-foreground">₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_10.monthlyRequirement.toLocaleString()}/mo</p>
               </div>
               <div className="text-right">
-                <div className="text-lg font-code font-bold">{allocation.citizensNeededClass10.toLocaleString()}</div>
+                <div className="text-lg font-code font-bold">{dynamicNeededClass10.toLocaleString()}</div>
                 <div className="text-[10px] text-muted-foreground uppercase">Citizens Needed</div>
               </div>
             </div>
             <div className="flex justify-between items-center p-3 bg-muted/20 rounded-lg border">
               <div className="space-y-1">
-                <span className="text-xs font-bold uppercase text-muted-foreground">Class 1-12 (3 Streams)</span>
+                <span className="text-xs font-bold uppercase text-muted-foreground">Full Class 12 (3 Streams)</span>
                 <p className="text-[10px] text-muted-foreground">₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.monthlyRequirement.toLocaleString()}/mo</p>
               </div>
               <div className="text-right">
-                <div className="text-lg font-code font-bold">{allocation.citizensNeededClass12.toLocaleString()}</div>
+                <div className="text-lg font-code font-bold">{dynamicNeededClass12.toLocaleString()}</div>
                 <div className="text-[10px] text-muted-foreground uppercase">Citizens Needed</div>
               </div>
             </div>
-            <div className="flex justify-between items-center p-3 bg-primary/5 rounded-lg border border-primary/20">
-              <span className="text-xs font-bold uppercase text-primary">1 School in Every District</span>
+            <div className="flex justify-between items-center p-4 bg-primary text-primary-foreground rounded-lg shadow-md">
+              <span className="text-xs font-bold uppercase tracking-widest">1 School in Every District</span>
               <div className="text-right">
-                <div className="text-lg font-code font-bold text-primary">{citizensForAll.toLocaleString()}</div>
-                <div className="text-[10px] text-muted-foreground uppercase tracking-tighter">~{(citizensForAll / 10000000).toFixed(2)} Crore Citizens</div>
+                <div className="text-2xl font-code font-black">{dynamicCitizensForAll.toLocaleString()}</div>
+                <div className="text-[10px] uppercase font-medium opacity-80">
+                  ~{(dynamicCitizensForAll / 10000000).toFixed(2)} Crore Citizens
+                </div>
               </div>
             </div>
           </div>
@@ -99,7 +133,7 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
         </CardContent>
       </Card>
 
-      <Card className="border-l-4 border-l-orange-500">
+      <Card className="border-l-4 border-l-orange-500 h-fit">
         <CardHeader>
           <div className="flex items-center gap-2 mb-2">
             <GraduationCap className="w-5 h-5 text-orange-500" />
