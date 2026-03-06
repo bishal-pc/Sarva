@@ -80,18 +80,23 @@ export default function OperationsPage() {
                         <TableHeader>
                           <TableRow className="bg-muted/50">
                             <TableHead>Stream</TableHead>
-                            <TableHead>Specialization</TableHead>
-                            <TableHead>Monthly Cost</TableHead>
+                            <TableHead>Teachers</TableHead>
+                            <TableHead>Monthly Salary</TableHead>
+                            <TableHead className="text-right">Total Monthly</TableHead>
                             <TableHead className="text-right">Setup Cost</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
                           {bd.STREAMS.map((s, idx) => (
                             <TableRow key={idx}>
-                              <TableCell className="font-bold">{s.name}</TableCell>
-                              <TableCell className="text-xs">{s.description}</TableCell>
-                              <TableCell className="font-code">₹{s.total.toLocaleString()}</TableCell>
-                              <TableCell className="text-right font-code font-bold">₹{s.setup.toLocaleString()}</TableCell>
+                              <TableCell className="font-bold">
+                                {s.name}
+                                <div className="text-[10px] text-muted-foreground font-normal">{s.description}</div>
+                              </TableCell>
+                              <TableCell>{s.count}</TableCell>
+                              <TableCell>₹{s.salary.toLocaleString()}</TableCell>
+                              <TableCell className="text-right font-code font-bold">₹{s.total.toLocaleString()}</TableCell>
+                              <TableCell className="text-right font-code text-muted-foreground">₹{s.setup.toLocaleString()}</TableCell>
                             </TableRow>
                           ))}
                         </TableBody>

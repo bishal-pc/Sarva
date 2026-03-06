@@ -17,13 +17,13 @@ export const SIMULATION_CONSTANTS = {
     },
     CLASS_10: {
       label: "Milestone 2: Secondary to Class 10",
-      monthlyRequirement: 1200000,
+      monthlyRequirement: 1280000,
       setupCost: 4000000,
       description: "Adds 7 secondary teachers and specialized lab facilities.",
     },
     CLASS_12: {
       label: "Milestone 3: Senior Secondary (3 Streams)",
-      monthlyRequirement: 2060000,
+      monthlyRequirement: 2140000,
       setupCost: 6500000,
       description: "Full capacity with Science, Arts, and Commerce streams (33 total teachers).",
     }
@@ -35,9 +35,9 @@ export const SIMULATION_CONSTANTS = {
       { level: "Secondary (9-10)", count: 7, salary: 45000, total: 315000 },
     ],
     STREAMS: [
-      { name: "Science", count: 5, salary: 55000, total: 275000, setup: 1200000, description: "Physics, Chem, Bio, Math, English" },
-      { name: "Arts", count: 5, salary: 50000, total: 250000, setup: 300000, description: "History, Pol Sci, Geog, Soc/Psych, English" },
-      { name: "Commerce", count: 5, salary: 50000, total: 250000, setup: 500000, description: "Accounts, B.St, Economics, Math, English" },
+      { name: "Science", count: 5, salary: 55000, total: 310000, setup: 1200000, description: "Physics, Chem, Bio, Math, English" },
+      { name: "Arts", count: 5, salary: 50000, total: 270000, setup: 300000, description: "History, Pol Sci, Geog, Soc/Psych, English" },
+      { name: "Commerce", count: 5, salary: 50000, total: 280000, setup: 500000, description: "Accounts, B.St, Economics, Math, English" },
     ],
     STAFF: [
       { role: "Principal", count: 1, salary: 70000, total: 70000 },
