@@ -25,10 +25,11 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
   const dynamicCitizensForAll = dynamicNeededClass12 * districts;
 
   // Time to collect setup cost (in months)
-  // UPDATED LOGIC: Use the number of citizens needed for sustenance as the benchmark for building.
-  const timeClass8 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_8.setupCost / (dynamicNeededClass8 * amount)).toFixed(1);
-  const timeClass10 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_10.setupCost / (dynamicNeededClass10 * amount)).toFixed(1);
-  const timeClass12 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.setupCost / (dynamicNeededClass12 * amount)).toFixed(1);
+  // Logic: How long for our CURRENT simulation participants to raise the setup capital at this rate.
+  const activeParticipants = Math.max(1, totalParticipants);
+  const timeClass8 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_8.setupCost / (activeParticipants * amount)).toFixed(1);
+  const timeClass10 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_10.setupCost / (activeParticipants * amount)).toFixed(1);
+  const timeClass12 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.setupCost / (activeParticipants * amount)).toFixed(1);
 
   // National impact stats
   const totalStudents = districts * 540;
@@ -57,10 +58,10 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
                 <TooltipContent className="max-w-xs p-4 space-y-2">
                   <p className="font-bold text-xs uppercase">Calculation Logic:</p>
                   <p className="text-[10px] leading-relaxed">
-                    <strong>Sustenance:</strong> Number of citizens required to meet the monthly operating budget at ₹{amount}/month.
+                    <strong>Sustenance:</strong> Total citizens required to meet the monthly operating budget at ₹{amount}/month.
                   </p>
                   <p className="text-[10px] leading-relaxed">
-                    <strong>Setup Phase:</strong> Time required for the <u>same sustenance group</u> to raise the initial capital at ₹{amount}/month.
+                    <strong>Setup Phase:</strong> Estimated months for the <u>current {activeParticipants} participants</u> to raise the setup capital at ₹{amount}/month.
                   </p>
                 </TooltipContent>
               </Tooltip>
