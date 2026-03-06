@@ -1,4 +1,3 @@
-
 "use client";
 
 import {useState, useEffect} from 'react';
@@ -9,11 +8,12 @@ import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import {SIMULATION_CONSTANTS} from '@/lib/simulation-logic';
 import {useToast} from '@/hooks/use-toast';
-import {Coins, Info} from 'lucide-react';
+import {Coins, Info, Loader2} from 'lucide-react';
 import {useFirestore} from '@/firebase';
-import {collection, doc, addDoc, setDoc, increment, serverTimestamp} from 'firebase/firestore';
+import {doc, getDoc, setDoc, increment, serverTimestamp} from 'firebase/firestore';
 import {errorEmitter} from '@/firebase/error-emitter';
 import {FirestorePermissionError} from '@/firebase/errors';
+import {getDeviceFingerprint, getMonthYearKey} from '@/lib/fingerprint';
 
 const STATES = [
   "Andaman and Nicobar Islands",
@@ -54,48 +54,41 @@ const STATES = [
   "West Bengal"
 ];
 
-const LOCAL_STORAGE_KEY = 'sarva_last_contribution';
-
 export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => void}) {
   const [amount, setAmount] = useState<number>(SIMULATION_CONSTANTS.MIN_CONTRIBUTION);
   const [state, setState] = useState<string>("");
   const [district, setDistrict] = useState<string>("");
   const [hasContributed, setHasContributed] = useState(false);
+  const [isChecking, setIsChecking] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const {toast} = useToast();
   const firestore = useFirestore();
 
-  // Check rate limit on mount
   useEffect(() => {
-    const lastContribution = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (lastContribution) {
-      const date = new Date(lastContribution);
-      const now = new Date();
-      // Lock if contribution was made in the current month and year
-      if (date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear()) {
-        setHasContributed(true);
+    async function checkStatus() {
+      if (!firestore) return;
+      try {
+        const fingerprint = await getDeviceFingerprint();
+        const monthKey = getMonthYearKey();
+        const docId = `${fingerprint}_${monthKey}`;
+        const docRef = doc(firestore, 'contributions', docId);
+        const snapshot = await getDoc(docRef);
+        
+        if (snapshot.exists()) {
+          setHasContributed(true);
+        }
+      } catch (e) {
+        console.error("Fingerprint check failed", e);
+      } finally {
+        setIsChecking(false);
       }
     }
-  }, []);
+    checkStatus();
+  }, [firestore]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Final check for rate limit before submission
-    const lastContribution = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (lastContribution) {
-      const date = new Date(lastContribution);
-      const now = new Date();
-      if (date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear()) {
-        setHasContributed(true);
-        toast({
-          variant: "destructive",
-          title: "Limit Reached",
-          description: "This device has already contributed to the simulation this month.",
-        });
-        return;
-      }
-    }
-
     if (!state) {
       toast({
         variant: "destructive",
@@ -116,49 +109,77 @@ export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => vo
 
     if (!firestore) return;
 
-    const contributionData = {
-      amount,
-      state,
-      district: district || "",
-      timestamp: serverTimestamp(),
-    };
+    setIsSubmitting(true);
 
-    const contributionsRef = collection(firestore, 'contributions');
-    const statsRef = doc(firestore, 'stats', 'global');
+    try {
+      const fingerprint = await getDeviceFingerprint();
+      const monthKey = getMonthYearKey();
+      const docId = `${fingerprint}_${monthKey}`;
+      
+      const contributionData = {
+        amount,
+        state,
+        district: district || "",
+        timestamp: serverTimestamp(),
+        deviceId: fingerprint, // Store for transparency
+      };
 
-    // 1. Log the individual anonymous contribution for the public ledger
-    addDoc(contributionsRef, contributionData)
-      .catch(async (error) => {
-        errorEmitter.emit('permission-error', new FirestorePermissionError({
-          path: contributionsRef.path,
-          operation: 'create',
-          requestResourceData: contributionData,
-        }));
+      const contributionRef = doc(firestore, 'contributions', docId);
+      const statsRef = doc(firestore, 'stats', 'global');
+
+      // Attempt to set the document. Security rules will fail if it exists.
+      await setDoc(contributionRef, contributionData);
+
+      // If successful, increment global simulation stats atomically
+      setDoc(statsRef, {
+        totalPool: increment(amount),
+        totalParticipants: increment(1)
+      }, { merge: true })
+        .catch(async (error) => {
+          errorEmitter.emit('permission-error', new FirestorePermissionError({
+            path: statsRef.path,
+            operation: 'update',
+            requestResourceData: { totalPool: amount, totalParticipants: 1 },
+          }));
+        });
+
+      setHasContributed(true);
+      onSuccess(amount);
+      
+      toast({
+        title: "Virtual Contribution Submitted",
+        description: `Thank you for contributing ₹${amount} from ${state}.`,
       });
-
-    // 2. Increment global simulation stats atomically
-    setDoc(statsRef, {
-      totalPool: increment(amount),
-      totalParticipants: increment(1)
-    }, { merge: true })
-      .catch(async (error) => {
-        errorEmitter.emit('permission-error', new FirestorePermissionError({
-          path: statsRef.path,
-          operation: 'update',
-          requestResourceData: { totalPool: amount, totalParticipants: 1 },
-        }));
-      });
-
-    // 3. Set the device-level lock
-    localStorage.setItem(LOCAL_STORAGE_KEY, new Date().toISOString());
-    setHasContributed(true);
-    onSuccess(amount);
-    
-    toast({
-      title: "Virtual Contribution Submitted",
-      description: `Thank you for contributing ₹${amount} from ${state}${district ? `, ${district}` : ''}.`,
-    });
+    } catch (error: any) {
+      if (error.code === 'permission-denied') {
+        setHasContributed(true);
+        toast({
+          variant: "destructive",
+          title: "Entry Already Exists",
+          description: "This device has already contributed to the simulation this month.",
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Submission Error",
+          description: "Something went wrong. Please try again later.",
+        });
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
+  if (isChecking) {
+    return (
+      <Card className="bg-muted/10 border-dashed">
+        <CardContent className="py-12 flex flex-col items-center justify-center gap-4">
+          <Loader2 className="w-6 h-6 animate-spin text-primary opacity-50" />
+          <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Verifying device eligibility...</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   if (hasContributed) {
     return (
@@ -166,8 +187,8 @@ export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => vo
         <CardContent className="pt-8 text-center space-y-2">
           <CardTitle className="text-xl font-black uppercase tracking-tight">Citizenship Acknowledged</CardTitle>
           <CardDescription className="text-sm">
-            You have already recorded your virtual contribution for <strong>{new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}</strong>. 
-            <br />This device is now locked until the next simulation window.
+            This device has already recorded a virtual contribution for <strong>{new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}</strong>. 
+            <br />The simulation is limited to one entry per device monthly to maintain data integrity.
           </CardDescription>
         </CardContent>
       </Card>
@@ -199,11 +220,12 @@ export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => vo
               value={amount}
               onChange={(e) => setAmount(Number(e.target.value))}
               className="text-lg font-black h-12 border-primary/20 bg-primary/5"
+              disabled={isSubmitting}
             />
             <div className="flex items-start gap-2 p-3 rounded bg-blue-50/50 border border-blue-100 mt-2">
               <Info className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
               <p className="text-[10px] text-blue-800 leading-tight font-medium">
-                <strong>Realistic Data Lock:</strong> Simulation contributions are limited to a maximum of <strong>₹500</strong> to maintain mathematical integrity based on average citizen potential.
+                <strong>Realistic Data Lock:</strong> Contributions are capped at <strong>₹500</strong> to ensure the simulation models realistic average citizen potential.
               </p>
             </div>
           </div>
@@ -211,7 +233,7 @@ export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => vo
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="state" className="text-xs font-bold uppercase text-muted-foreground">State / UT</Label>
-              <Select onValueChange={setState} value={state}>
+              <Select onValueChange={setState} value={state} disabled={isSubmitting}>
                 <SelectTrigger className="h-10">
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
@@ -231,17 +253,19 @@ export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => vo
                 value={district}
                 onChange={(e) => setDistrict(e.target.value)}
                 className="h-10"
+                disabled={isSubmitting}
               />
             </div>
           </div>
 
-          <Button type="submit" className="w-full h-12 bg-primary hover:bg-primary/90 text-sm font-bold uppercase tracking-widest">
+          <Button type="submit" className="w-full h-12 bg-primary hover:bg-primary/90 text-sm font-bold uppercase tracking-widest" disabled={isSubmitting}>
+            {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
             Commit to Simulation
           </Button>
           <div className="flex items-center justify-center gap-2 pt-2">
             <div className="h-px bg-muted flex-1" />
             <p className="text-[9px] text-muted-foreground uppercase font-black tracking-tighter">
-              Anonymous Device Lock Active
+              Secure Device Fingerprinting Active
             </p>
             <div className="h-px bg-muted flex-1" />
           </div>

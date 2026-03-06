@@ -7,16 +7,19 @@ service cloud.firestore {
       allow write: if true;
     }
     
-    // Contributions are anonymous and publicly writeable (limited by device storage logic in UI)
+    // Contributions are identified by a unique ID: {fingerprint}_{YYYY}_{MM}
+    // We allow creation but strictly forbid updates to prevent double-counting or tampering
     match /contributions/{contributionId} {
       allow read: if true;
-      allow create: if true;
+      allow create: if !exists(/databases/$(database)/documents/contributions/$(contributionId));
+      allow update, delete: if false;
     }
     
-    // Forum posts are public and do not require authentication
+    // Forum posts use a similar fingerprinting logic to limit daily spam
     match /forum_posts/{postId} {
       allow read: if true;
-      allow create: if true;
+      allow create: if !exists(/databases/$(database)/documents/forum_posts/$(postId));
+      allow update, delete: if false;
     }
   }
 }

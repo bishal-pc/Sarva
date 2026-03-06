@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
@@ -12,9 +11,10 @@ import { useToast } from '@/hooks/use-toast';
 import { MessageSquare, User, MapPin, Calendar, ShieldAlert, Loader2 } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { useCollection, useFirestore } from '@/firebase';
-import { collection, query, orderBy, limit, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, query, orderBy, limit, setDoc, doc, serverTimestamp, getDoc } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
+import { getDeviceFingerprint } from '@/lib/fingerprint';
 
 const STATES = [
   "Andaman and Nicobar Islands",
@@ -55,13 +55,14 @@ const STATES = [
   "West Bengal"
 ];
 
-const DAILY_LIMIT = 5;
+// Limit to 3 posts per device per day via fingerprint
+const DAILY_LIMIT = 3;
 
 export default function ForumPage() {
   const [name, setName] = useState('');
   const [state, setState] = useState('');
   const [content, setContent] = useState('');
-  const [remainingPosts, setRemainingPosts] = useState(DAILY_LIMIT);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const firestore = useFirestore();
 
@@ -76,18 +77,7 @@ export default function ForumPage() {
 
   const { data: posts, loading } = useCollection(forumQuery);
 
-  useEffect(() => {
-    const limitData = JSON.parse(localStorage.getItem('sarva_forum_limit') || '{"count": 0, "date": ""}');
-    const today = new Date().toLocaleDateString();
-    
-    if (limitData.date !== today) {
-      setRemainingPosts(DAILY_LIMIT);
-    } else {
-      setRemainingPosts(Math.max(0, DAILY_LIMIT - limitData.count));
-    }
-  }, []);
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!name || !state || !content) {
@@ -99,50 +89,74 @@ export default function ForumPage() {
       return;
     }
 
-    const limitData = JSON.parse(localStorage.getItem('sarva_forum_limit') || '{"count": 0, "date": ""}');
-    const today = new Date().toLocaleDateString();
-
-    let newCount = 1;
-    if (limitData.date === today) {
-      if (limitData.count >= DAILY_LIMIT) {
-        toast({
-          variant: "destructive",
-          title: "Limit Reached",
-          description: `You have reached the daily limit of ${DAILY_LIMIT} posts. Please come back tomorrow.`,
-        });
-        return;
-      }
-      newCount = limitData.count + 1;
-    }
-
     if (!firestore) return;
 
-    const postData = {
-      name,
-      state,
-      content,
-      createdAt: serverTimestamp(),
-    };
+    setIsSubmitting(true);
 
-    const postsRef = collection(firestore, 'forum_posts');
-    addDoc(postsRef, postData)
-      .catch(async (error) => {
-        errorEmitter.emit('permission-error', new FirestorePermissionError({
-          path: postsRef.path,
-          operation: 'create',
-          requestResourceData: postData,
-        }));
+    try {
+      const fingerprint = await getDeviceFingerprint();
+      const today = new Date().toISOString().split('T')[0];
+      
+      // We use a simple counter suffix to allow multiple posts per day
+      // For this MVP, we check existence of slots 0, 1, 2
+      let slot = -1;
+      for (let i = 0; i < DAILY_LIMIT; i++) {
+        const testId = `${fingerprint}_${today}_${i}`;
+        const testRef = doc(firestore, 'forum_posts', testId);
+        const snap = await getDoc(testRef);
+        if (!snap.exists()) {
+          slot = i;
+          break;
+        }
+      }
+
+      if (slot === -1) {
+        toast({
+          variant: "destructive",
+          title: "Daily Limit Reached",
+          description: `You have reached the daily limit of ${DAILY_LIMIT} posts per device.`,
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      const postData = {
+        name,
+        state,
+        content,
+        createdAt: serverTimestamp(),
+        deviceId: fingerprint,
+      };
+
+      const postDocId = `${fingerprint}_${today}_${slot}`;
+      const postRef = doc(firestore, 'forum_posts', postDocId);
+
+      await setDoc(postRef, postData);
+
+      setName('');
+      setContent('');
+      
+      toast({
+        title: "Post Submitted",
+        description: "Thank you for sharing your views on the Sarva project.",
       });
-
-    localStorage.setItem('sarva_forum_limit', JSON.stringify({ count: newCount, date: today }));
-    setRemainingPosts(DAILY_LIMIT - newCount);
-    setName('');
-    setContent('');
-    
-    toast({
-      title: "Post Submitted",
-      description: "Thank you for sharing your views on the Sarva project.",
-    });
+    } catch (error: any) {
+      if (error.code === 'permission-denied') {
+        toast({
+          variant: "destructive",
+          title: "Post Error",
+          description: "This device is restricted from posting more content today.",
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Submission Failed",
+          description: "Something went wrong. Please try again later.",
+        });
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -155,7 +169,6 @@ export default function ForumPage() {
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* Post Form */}
         <div className="md:col-span-1">
           <Card className="sticky top-24 border-primary/20">
             <CardHeader>
@@ -176,11 +189,12 @@ export default function ForumPage() {
                     placeholder="E.g. Rajesh Kumar" 
                     value={name} 
                     onChange={(e) => setName(e.target.value)} 
+                    disabled={isSubmitting}
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="state">State / UT</Label>
-                  <Select onValueChange={setState} value={state}>
+                  <Select onValueChange={setState} value={state} disabled={isSubmitting}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select state or UT" />
                     </SelectTrigger>
@@ -199,15 +213,17 @@ export default function ForumPage() {
                     className="min-h-[120px]"
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
+                    disabled={isSubmitting}
                   />
                 </div>
                 
                 <div className="flex items-center gap-2 p-2 bg-muted/50 rounded text-[10px] text-muted-foreground border">
                   <ShieldAlert className="w-3 h-3 shrink-0" />
-                  <span>Remaining today: <strong>{remainingPosts} posts</strong></span>
+                  <span>Verified via secure device fingerprinting</span>
                 </div>
 
-                <Button type="submit" className="w-full" disabled={remainingPosts <= 0}>
+                <Button type="submit" className="w-full" disabled={isSubmitting}>
+                  {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
                   Submit Post
                 </Button>
               </form>
@@ -215,7 +231,6 @@ export default function ForumPage() {
           </Card>
         </div>
 
-        {/* Post Feed */}
         <div className="md:col-span-2 space-y-6">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Recent Activity</h3>
@@ -235,7 +250,7 @@ export default function ForumPage() {
                 </CardContent>
               </Card>
             ) : (
-              posts?.map((post) => (
+              posts?.map((post: any) => (
                 <Card key={post.id} className="hover:border-primary/30 transition-colors">
                   <CardHeader className="pb-3">
                     <div className="flex justify-between items-start">
@@ -272,7 +287,7 @@ export default function ForumPage() {
           <div className="text-center p-8 bg-muted/20 rounded-lg space-y-2">
             <p className="text-xs font-bold uppercase text-muted-foreground">Forum Guidelines</p>
             <p className="text-[10px] text-muted-foreground max-w-md mx-auto italic">
-              Sarva is a collaborative simulation. Please keep discussions civil, focused on civic development, and constructive. Obscene or abusive content will be automatically filtered.
+              Sarva is a collaborative simulation. Please keep discussions civil, focused on civic development, and constructive. Fingerprinting identifies devices to maintain a high signal-to-noise ratio.
             </p>
           </div>
         </div>
