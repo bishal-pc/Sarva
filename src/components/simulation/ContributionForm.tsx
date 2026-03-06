@@ -30,6 +30,7 @@ export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => vo
     if (lastContribution) {
       const date = new Date(lastContribution);
       const now = new Date();
+      // Enforce one contribution per month
       if (date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear()) {
         setHasContributed(true);
       }

@@ -13,8 +13,8 @@ import {Separator} from '@/components/ui/separator';
 import {Github, ExternalLink, ShieldCheck, Wallet, Info} from 'lucide-react';
 
 const INITIAL_STATS = {
-  participants: 12430,
-  pool: 2850000,
+  participants: 0,
+  pool: 0,
 };
 
 export default function Home() {
@@ -30,6 +30,12 @@ export default function Home() {
   useEffect(() => {
     setMounted(true);
     setLastUpdated(new Date().toLocaleDateString());
+    
+    // Load persisted stats if any (simulating a backend with local storage for this demo)
+    const savedStats = localStorage.getItem('sarva_sim_stats');
+    if (savedStats) {
+      setStats(JSON.parse(savedStats));
+    }
   }, []);
 
   useEffect(() => {
@@ -48,14 +54,21 @@ export default function Home() {
         setLoading(false);
       }
     }
-    fetchAiData();
+    // Only fetch if there's some pool data or it's the first load
+    if (stats.pool > 0 || !districtData) {
+      fetchAiData();
+    }
   }, [stats.pool]);
 
   const handleNewContribution = (amount: number) => {
-    setStats(prev => ({
-      participants: prev.participants + 1,
-      pool: prev.pool + amount
-    }));
+    setStats(prev => {
+      const newStats = {
+        participants: prev.participants + 1,
+        pool: prev.pool + amount
+      };
+      localStorage.setItem('sarva_sim_stats', JSON.stringify(newStats));
+      return newStats;
+    });
   };
 
   return (
@@ -145,7 +158,7 @@ export default function Home() {
                     <span>₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.setupCost.toLocaleString()}</span>
                   </div>
                   <div className="h-1 bg-muted rounded-full overflow-hidden">
-                    <div className="h-full bg-primary" style={{width: '100%'}}></div>
+                    <div className="h-full bg-primary" style={{width: `${Math.min(100, (stats.pool / SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.setupCost) * 100)}%`}}></div>
                   </div>
                 </div>
                 <div className="space-y-1">
@@ -154,7 +167,7 @@ export default function Home() {
                     <span>₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_8.setupCost.toLocaleString()}</span>
                   </div>
                   <div className="h-1 bg-muted rounded-full overflow-hidden">
-                    <div className="h-full bg-secondary" style={{width: '30%'}}></div>
+                    <div className="h-full bg-secondary" style={{width: `${Math.min(100, (stats.pool / SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_8.setupCost) * 100)}%`}}></div>
                   </div>
                 </div>
                 <p className="text-[10px] text-muted-foreground italic">One-time capital expenditure per simulated institution.</p>
