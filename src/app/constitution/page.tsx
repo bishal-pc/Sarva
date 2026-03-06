@@ -219,7 +219,7 @@ export default function ConstitutionPage() {
                     "Sarva is founded in restraint, not ambition. Its purpose is not to accumulate power, but to remove the conditions that make power necessary. This Constitution binds us not to success, but to integrity."
                   </p>
                 </div>
-                <p className="pt-8 font-code text-xs">Document Version: 1.0.4-immutable • Last Revised: October 2023</p>
+                <p className="pt-8 font-code text-xs">Document Version: 1.0.4-immutable • Last Revised: March 2025</p>
               </section>
             </div>
           </ScrollArea>
