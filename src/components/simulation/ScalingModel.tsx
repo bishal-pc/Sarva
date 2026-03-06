@@ -89,7 +89,10 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
             <div className="flex justify-between items-center p-3 bg-muted/20 rounded-lg border">
               <div className="space-y-1">
                 <span className="text-xs font-bold uppercase text-muted-foreground">Class 1-8 Milestone</span>
-                <p className="text-[10px] text-muted-foreground">₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_8.monthlyRequirement.toLocaleString()}/mo</p>
+                <div className="flex flex-col">
+                  <span className="text-[10px] text-muted-foreground">Monthly: ₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_8.monthlyRequirement.toLocaleString()}/mo</span>
+                  <span className="text-[10px] text-primary/70 font-semibold italic">One-time Setup: ₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_8.setupCost.toLocaleString()}</span>
+                </div>
               </div>
               <div className="text-right">
                 <div className="text-lg font-code font-bold">{dynamicNeededClass8.toLocaleString()}</div>
@@ -99,7 +102,10 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
             <div className="flex justify-between items-center p-3 bg-muted/20 rounded-lg border">
               <div className="space-y-1">
                 <span className="text-xs font-bold uppercase text-muted-foreground">Class 1-10 Milestone</span>
-                <p className="text-[10px] text-muted-foreground">₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_10.monthlyRequirement.toLocaleString()}/mo</p>
+                <div className="flex flex-col">
+                  <span className="text-[10px] text-muted-foreground">Monthly: ₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_10.monthlyRequirement.toLocaleString()}/mo</span>
+                  <span className="text-[10px] text-primary/70 font-semibold italic">One-time Setup: ₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_10.setupCost.toLocaleString()}</span>
+                </div>
               </div>
               <div className="text-right">
                 <div className="text-lg font-code font-bold">{dynamicNeededClass10.toLocaleString()}</div>
@@ -109,7 +115,10 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
             <div className="flex justify-between items-center p-3 bg-muted/20 rounded-lg border">
               <div className="space-y-1">
                 <span className="text-xs font-bold uppercase text-muted-foreground">Full Class 12 (3 Streams)</span>
-                <p className="text-[10px] text-muted-foreground">₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.monthlyRequirement.toLocaleString()}/mo</p>
+                <div className="flex flex-col">
+                  <span className="text-[10px] text-muted-foreground">Monthly: ₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.monthlyRequirement.toLocaleString()}/mo</span>
+                  <span className="text-[10px] text-primary/70 font-semibold italic">One-time Setup: ₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.setupCost.toLocaleString()}</span>
+                </div>
               </div>
               <div className="text-right">
                 <div className="text-lg font-code font-bold">{dynamicNeededClass12.toLocaleString()}</div>
