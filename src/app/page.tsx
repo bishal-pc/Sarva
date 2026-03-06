@@ -5,16 +5,15 @@ import {DashboardStats} from '@/components/simulation/DashboardStats';
 import {ContributionForm} from '@/components/simulation/ContributionForm';
 import {ResourceDisplay} from '@/components/simulation/ResourceDisplay';
 import {DistrictExpansion} from '@/components/simulation/DistrictExpansion';
-import {calculateAllocation} from '@/lib/simulation-logic';
+import {calculateAllocation, SIMULATION_CONSTANTS} from '@/lib/simulation-logic';
 import {proposeDistrictExpansion, DistrictExpansionOutput} from '@/ai/flows/propose-district-expansion';
 import {suggestSimulatedFundAllocation} from '@/ai/flows/suggest-simulated-fund-allocation-flow';
 import {Separator} from '@/components/ui/separator';
-import {Github, ExternalLink, ShieldCheck} from 'lucide-react';
+import {Github, ExternalLink, ShieldCheck, Wallet} from 'lucide-react';
 
-// Initial dummy data to represent state
 const INITIAL_STATS = {
   participants: 12430,
-  pool: 783090,
+  pool: 2850000,
 };
 
 export default function Home() {
@@ -29,8 +28,6 @@ export default function Home() {
 
   useEffect(() => {
     setMounted(true);
-    // Use fixed seed or static date for hydration consistency if needed, 
-    // but useEffect is safer for real current date.
     setLastUpdated(new Date().toLocaleDateString());
   }, []);
 
@@ -45,7 +42,7 @@ export default function Home() {
         setDistrictData(districts);
         setAiSuggestion(suggestion.suggestion);
       } catch (e) {
-        // Silently fail as it's a simulation
+        // Silently fail
       } finally {
         setLoading(false);
       }
@@ -112,8 +109,35 @@ export default function Home() {
           <aside className="space-y-8">
             <ContributionForm onSuccess={handleNewContribution} />
             
-            <div className="bg-card p-6 rounded-lg border shadow-sm space-y-4">
-              <h3 className="font-bold text-sm uppercase tracking-wider">Project Metadata</h3>
+            <div className="bg-card p-6 rounded-lg border shadow-sm space-y-6">
+              <div className="flex items-center gap-2">
+                <Wallet className="w-5 h-5 text-primary" />
+                <h3 className="font-bold text-sm uppercase tracking-wider">Setup Cost Milestones</h3>
+              </div>
+              <div className="space-y-4">
+                <div className="space-y-1">
+                  <div className="flex justify-between text-[10px] font-bold uppercase text-muted-foreground">
+                    <span>Full Capacity School</span>
+                    <span>₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.setupCost.toLocaleString()}</span>
+                  </div>
+                  <div className="h-1 bg-muted rounded-full overflow-hidden">
+                    <div className="h-full bg-primary" style={{width: '100%'}}></div>
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <div className="flex justify-between text-[10px] font-bold uppercase text-muted-foreground">
+                    <span>Middle School Setup</span>
+                    <span>₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_8.setupCost.toLocaleString()}</span>
+                  </div>
+                  <div className="h-1 bg-muted rounded-full overflow-hidden">
+                    <div className="h-full bg-secondary" style={{width: '30%'}}></div>
+                  </div>
+                </div>
+                <p className="text-[10px] text-muted-foreground italic">One-time capital expenditure per simulated institution.</p>
+              </div>
+              
+              <Separator />
+
               <div className="space-y-3 font-code text-xs">
                 <div className="flex justify-between items-center border-b pb-2">
                   <span className="text-muted-foreground">Version</span>

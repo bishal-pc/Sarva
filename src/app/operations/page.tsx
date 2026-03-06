@@ -48,9 +48,9 @@ export default function OperationsPage() {
                   </DialogHeader>
                   
                   <div className="flex-1 overflow-y-auto min-h-0 p-6 space-y-12">
-                    {/* Teachers Table */}
+                    {/* Academic Staff */}
                     <section className="space-y-4">
-                      <h4 className="font-bold uppercase tracking-wider text-sm border-b pb-2">1. Academic Staff (23 Teachers)</h4>
+                      <h4 className="font-bold uppercase tracking-wider text-sm border-b pb-2">1. Academic Staff (Class 1-10)</h4>
                       <Table>
                         <TableHeader>
                           <TableRow className="bg-muted/50">
@@ -73,9 +73,34 @@ export default function OperationsPage() {
                       </Table>
                     </section>
 
-                    {/* Staff Table */}
+                    {/* Senior Secondary Streams */}
                     <section className="space-y-4">
-                      <h4 className="font-bold uppercase tracking-wider text-sm border-b pb-2">2. Non-Teaching Staff</h4>
+                      <h4 className="font-bold uppercase tracking-wider text-sm border-b pb-2">2. Senior Secondary Streams (Class 11-12)</h4>
+                      <Table>
+                        <TableHeader>
+                          <TableRow className="bg-muted/50">
+                            <TableHead>Stream</TableHead>
+                            <TableHead>Specialization</TableHead>
+                            <TableHead>Monthly Cost</TableHead>
+                            <TableHead className="text-right">Setup Cost</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {bd.STREAMS.map((s, idx) => (
+                            <TableRow key={idx}>
+                              <TableCell className="font-bold">{s.name}</TableCell>
+                              <TableCell className="text-xs">{s.description}</TableCell>
+                              <TableCell className="font-code">₹{s.total.toLocaleString()}</TableCell>
+                              <TableCell className="text-right font-code font-bold">₹{s.setup.toLocaleString()}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </section>
+
+                    {/* Non-Teaching Staff */}
+                    <section className="space-y-4">
+                      <h4 className="font-bold uppercase tracking-wider text-sm border-b pb-2">3. Non-Teaching Staff</h4>
                       <Table>
                         <TableHeader>
                           <TableRow className="bg-muted/50">
@@ -98,9 +123,9 @@ export default function OperationsPage() {
                       </Table>
                     </section>
 
-                    {/* Infrastructure Table */}
+                    {/* Infrastructure */}
                     <section className="space-y-4">
-                      <h4 className="font-bold uppercase tracking-wider text-sm border-b pb-2">3. Infrastructure & Utilities (Monthly)</h4>
+                      <h4 className="font-bold uppercase tracking-wider text-sm border-b pb-2">4. Infrastructure & Utilities (Monthly)</h4>
                       <Table>
                         <TableBody>
                           {bd.INFRASTRUCTURE.map((i, idx) => (
@@ -110,7 +135,7 @@ export default function OperationsPage() {
                             </TableRow>
                           ))}
                           <TableRow className="bg-primary/5 font-black">
-                            <TableCell className="uppercase">Total Monthly Operating Cost</TableCell>
+                            <TableCell className="uppercase">Total Monthly Operating Cost (Full Capacity)</TableCell>
                             <TableCell className="text-right font-code text-primary">₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.monthlyRequirement.toLocaleString()}</TableCell>
                           </TableRow>
                         </TableBody>
@@ -119,7 +144,7 @@ export default function OperationsPage() {
 
                     {/* One-time Setup */}
                     <section className="space-y-4">
-                      <h4 className="font-bold uppercase tracking-wider text-sm border-b pb-2">4. One-Time Setup Costs (Estimated ₹35-40 Lakh)</h4>
+                      <h4 className="font-bold uppercase tracking-wider text-sm border-b pb-2">5. One-Time Setup Costs (Estimated ₹60-65 Lakh)</h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-4">
                         {bd.ONE_TIME_SETUP.map((item, idx) => (
                           <div key={idx} className="flex justify-between items-center p-4 border rounded bg-muted/20">
@@ -141,8 +166,13 @@ export default function OperationsPage() {
                   <div className="space-y-2">
                     <h4 className="font-bold text-lg">{targets.CLASS_8.label}</h4>
                     <p className="text-sm text-muted-foreground">{targets.CLASS_8.description}</p>
-                    <div className="bg-muted/30 p-3 rounded text-sm font-code">
-                      Monthly Pool Required: ₹{targets.CLASS_8.monthlyRequirement.toLocaleString()}
+                    <div className="flex gap-2">
+                      <div className="bg-muted/30 p-2 rounded text-[10px] font-code">
+                        Monthly: ₹{targets.CLASS_8.monthlyRequirement.toLocaleString()}
+                      </div>
+                      <div className="bg-muted/30 p-2 rounded text-[10px] font-code">
+                        Setup: ₹{targets.CLASS_8.setupCost.toLocaleString()}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -153,8 +183,13 @@ export default function OperationsPage() {
                   <div className="space-y-2">
                     <h4 className="font-bold text-lg">{targets.CLASS_10.label}</h4>
                     <p className="text-sm text-muted-foreground">{targets.CLASS_10.description}</p>
-                    <div className="bg-muted/30 p-3 rounded text-sm font-code">
-                      Monthly Pool Required: ₹{targets.CLASS_10.monthlyRequirement.toLocaleString()}
+                    <div className="flex gap-2">
+                      <div className="bg-muted/30 p-2 rounded text-[10px] font-code">
+                        Monthly: ₹{targets.CLASS_10.monthlyRequirement.toLocaleString()}
+                      </div>
+                      <div className="bg-muted/30 p-2 rounded text-[10px] font-code">
+                        Setup: ₹{targets.CLASS_10.setupCost.toLocaleString()}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -165,8 +200,13 @@ export default function OperationsPage() {
                   <div className="space-y-2">
                     <h4 className="font-bold text-lg">{targets.CLASS_12.label}</h4>
                     <p className="text-sm text-muted-foreground">{targets.CLASS_12.description}</p>
-                    <div className="bg-muted/30 p-3 rounded text-sm font-code">
-                      Monthly Pool Required: ₹{targets.CLASS_12.monthlyRequirement.toLocaleString()}
+                    <div className="flex gap-2">
+                      <div className="bg-muted/30 p-2 rounded text-[10px] font-code">
+                        Monthly: ₹{targets.CLASS_12.monthlyRequirement.toLocaleString()}
+                      </div>
+                      <div className="bg-muted/30 p-2 rounded text-[10px] font-code">
+                        Setup: ₹{targets.CLASS_12.setupCost.toLocaleString()}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -202,43 +242,31 @@ export default function OperationsPage() {
         <aside className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm uppercase tracking-widest text-muted-foreground">Standard School Unit</CardTitle>
+              <CardTitle className="text-sm uppercase tracking-widest text-muted-foreground">Standard School Capacity</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-xs border-b pb-2">
-                  <span>Capacity</span>
-                  <span className="font-bold">360 Students</span>
+                  <span>Total Students</span>
+                  <span className="font-bold">540</span>
                 </div>
                 <div className="flex items-center justify-between text-xs border-b pb-2">
                   <span>Teachers (Full)</span>
-                  <span className="font-bold">23</span>
+                  <span className="font-bold">33</span>
                 </div>
                 <div className="flex items-center justify-between text-xs border-b pb-2">
-                  <span>Staff</span>
+                  <span>Support Staff</span>
                   <span className="font-bold">8</span>
                 </div>
                 <div className="flex items-center justify-between text-xs border-b pb-2">
-                  <span>Rooms Required</span>
-                  <span className="font-bold">~18</span>
+                  <span>Streams Offered</span>
+                  <span className="font-bold">3</span>
                 </div>
               </div>
               <div className="pt-4 space-y-2">
-                <h5 className="text-[10px] font-bold uppercase text-muted-foreground">Monthly Expense Breakdown</h5>
-                <div className="space-y-1 text-xs font-code">
-                  <div className="flex justify-between">
-                    <span>Salaries</span>
-                    <span>77%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Rent</span>
-                    <span>17%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Utilities/Maint</span>
-                    <span>6%</span>
-                  </div>
-                </div>
+                <h5 className="text-[10px] font-bold uppercase text-muted-foreground">Operating Cost Per Student</h5>
+                <div className="text-xl font-code font-bold text-primary">₹3,815<span className="text-[10px] font-normal text-muted-foreground">/mo</span></div>
+                <p className="text-[10px] text-muted-foreground italic">Significantly lower than average private institutions with comparable standards.</p>
               </div>
             </CardContent>
           </Card>
