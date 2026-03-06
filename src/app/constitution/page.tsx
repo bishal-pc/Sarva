@@ -162,6 +162,32 @@ export default function ConstitutionPage() {
                 </section>
 
                 <section>
+                  <h3 className="text-xl font-bold mb-4 uppercase border-l-4 border-primary pl-4">Article 12 — Replication and Affiliation</h3>
+                  <div className="space-y-2">
+                    <p>12.1 Sarva may permit replication only by individuals or groups who accept this Constitution without modification.</p>
+                    <p>12.2 Replicated units shall remain subject to central transparency standards, ethical oversight, and public accountability.</p>
+                    <p>12.3 Sarva reserves the right to revoke affiliation upon constitutional violation.</p>
+                  </div>
+                </section>
+
+                <section>
+                  <h3 className="text-xl font-bold mb-4 uppercase border-l-4 border-primary pl-4">Article 13 — Political Neutrality and Future Expression</h3>
+                  <div className="space-y-2">
+                    <p>13.1 Sarva shall not function as a political party.</p>
+                    <p>13.2 Sarva may engage in civic education and public discourse consistent with its objectives.</p>
+                    <p>13.3 Any future political expression shall require separation from operational services, continued non-extraction, and full transparency.</p>
+                  </div>
+                </section>
+
+                <section>
+                  <h3 className="text-xl font-bold mb-4 uppercase border-l-4 border-primary pl-4">Article 14 — Dissolution</h3>
+                  <div className="space-y-2">
+                    <p>14.1 Sarva may be dissolved only by lawful judicial process.</p>
+                    <p>14.2 Upon dissolution, all assets shall irrevocably transfer to another public charitable trust with identical constitutional principles.</p>
+                  </div>
+                </section>
+
+                <section>
                   <h3 className="text-xl font-bold mb-4 uppercase border-l-4 border-primary pl-4">Article 15 — Supremacy of the Constitution</h3>
                   <div className="space-y-2">
                     <p>15.1 This Constitution is the supreme governing document of Sarva.</p>
@@ -219,7 +245,7 @@ export default function ConstitutionPage() {
                     "Sarva is founded in restraint, not ambition. Its purpose is not to accumulate power, but to remove the conditions that make power necessary. This Constitution binds us not to success, but to integrity."
                   </p>
                 </div>
-                <p className="pt-8 font-code text-xs">Document Version: 1.0.4-immutable • Last Revised: March 2025</p>
+                <p className="pt-8 font-code text-xs">Document Version: 1.0.4-immutable • Last Revised: 07 March 2026</p>
               </section>
             </div>
           </ScrollArea>
