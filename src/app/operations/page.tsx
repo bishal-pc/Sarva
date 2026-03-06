@@ -6,7 +6,6 @@ import {ArrowRight, School, MapPin, Layers, Info} from 'lucide-react';
 import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from '@/components/ui/dialog';
 import {Button} from '@/components/ui/button';
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '@/components/ui/table';
-import {ScrollArea} from '@/components/ui/scroll-area';
 
 export default function OperationsPage() {
   const targets = SIMULATION_CONSTANTS.OPERATIONAL_TARGETS;
@@ -43,95 +42,94 @@ export default function OperationsPage() {
                     Breakdown
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-3xl max-h-[90vh] flex flex-col p-0">
-                  <DialogHeader className="p-6 pb-2">
+                <DialogContent className="max-w-4xl max-h-[90vh] p-0 flex flex-col overflow-hidden gap-0">
+                  <DialogHeader className="p-6 border-b shrink-0">
                     <DialogTitle className="text-2xl font-black uppercase tracking-tight">Financial & Operational Breakdown</DialogTitle>
                   </DialogHeader>
-                  <ScrollArea className="flex-1 px-6">
-                    <div className="space-y-8 py-4">
-                      {/* Teachers Table */}
-                      <section className="space-y-3">
-                        <h4 className="font-bold uppercase tracking-wider text-sm border-b pb-1">1. Academic Staff (23 Teachers)</h4>
-                        <Table>
-                          <TableHeader>
-                            <TableRow className="bg-muted/50">
-                              <TableHead>Level</TableHead>
-                              <TableHead>Count</TableHead>
-                              <TableHead>Monthly Salary</TableHead>
-                              <TableHead className="text-right">Total</TableHead>
+                  
+                  <div className="flex-1 overflow-y-auto min-h-0 p-6 space-y-12">
+                    {/* Teachers Table */}
+                    <section className="space-y-4">
+                      <h4 className="font-bold uppercase tracking-wider text-sm border-b pb-2">1. Academic Staff (23 Teachers)</h4>
+                      <Table>
+                        <TableHeader>
+                          <TableRow className="bg-muted/50">
+                            <TableHead>Level</TableHead>
+                            <TableHead>Count</TableHead>
+                            <TableHead>Monthly Salary</TableHead>
+                            <TableHead className="text-right">Total</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {bd.TEACHERS.map((t, idx) => (
+                            <TableRow key={idx}>
+                              <TableCell className="font-medium">{t.level}</TableCell>
+                              <TableCell>{t.count}</TableCell>
+                              <TableCell>₹{t.salary.toLocaleString()}</TableCell>
+                              <TableCell className="text-right font-code font-bold">₹{t.total.toLocaleString()}</TableCell>
                             </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {bd.TEACHERS.map((t, idx) => (
-                              <TableRow key={idx}>
-                                <TableCell>{t.level}</TableCell>
-                                <TableCell>{t.count}</TableCell>
-                                <TableCell>₹{t.salary.toLocaleString()}</TableCell>
-                                <TableCell className="text-right font-code font-bold">₹{t.total.toLocaleString()}</TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </section>
-
-                      {/* Staff Table */}
-                      <section className="space-y-3">
-                        <h4 className="font-bold uppercase tracking-wider text-sm border-b pb-1">2. Non-Teaching Staff</h4>
-                        <Table>
-                          <TableHeader>
-                            <TableRow className="bg-muted/50">
-                              <TableHead>Role</TableHead>
-                              <TableHead>Count</TableHead>
-                              <TableHead>Monthly Salary</TableHead>
-                              <TableHead className="text-right">Total</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {bd.STAFF.map((s, idx) => (
-                              <TableRow key={idx}>
-                                <TableCell>{s.role}</TableCell>
-                                <TableCell>{s.count}</TableCell>
-                                <TableCell>₹{s.salary.toLocaleString()}</TableCell>
-                                <TableCell className="text-right font-code font-bold">₹{s.total.toLocaleString()}</TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </section>
-
-                      {/* Infrastructure Table */}
-                      <section className="space-y-3">
-                        <h4 className="font-bold uppercase tracking-wider text-sm border-b pb-1">3. Infrastructure & Utilities (Monthly)</h4>
-                        <Table>
-                          <TableBody>
-                            {bd.INFRASTRUCTURE.map((i, idx) => (
-                              <TableRow key={idx}>
-                                <TableCell>{i.item}</TableCell>
-                                <TableCell className="text-right font-code font-bold">₹{i.monthly.toLocaleString()}</TableCell>
-                              </TableRow>
-                            ))}
-                            <TableRow className="bg-primary/5 font-black">
-                              <TableCell className="uppercase">Total Monthly Operating Cost</TableCell>
-                              <TableCell className="text-right font-code">₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.monthlyRequirement.toLocaleString()}</TableCell>
-                            </TableRow>
-                          </TableBody>
-                        </Table>
-                      </section>
-
-                      {/* One-time Setup */}
-                      <section className="space-y-3">
-                        <h4 className="font-bold uppercase tracking-wider text-sm border-b pb-1">4. One-Time Setup Costs (Estimated ₹35-40 Lakh)</h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-8">
-                          {bd.ONE_TIME_SETUP.map((item, idx) => (
-                            <div key={idx} className="flex justify-between items-center p-3 border rounded bg-muted/20">
-                              <span className="text-xs font-medium">{item.item}</span>
-                              <span className="font-code font-bold text-xs">₹{item.cost.toLocaleString()}</span>
-                            </div>
                           ))}
-                        </div>
-                      </section>
-                    </div>
-                  </ScrollArea>
+                        </TableBody>
+                      </Table>
+                    </section>
+
+                    {/* Staff Table */}
+                    <section className="space-y-4">
+                      <h4 className="font-bold uppercase tracking-wider text-sm border-b pb-2">2. Non-Teaching Staff</h4>
+                      <Table>
+                        <TableHeader>
+                          <TableRow className="bg-muted/50">
+                            <TableHead>Role</TableHead>
+                            <TableHead>Count</TableHead>
+                            <TableHead>Monthly Salary</TableHead>
+                            <TableHead className="text-right">Total</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {bd.STAFF.map((s, idx) => (
+                            <TableRow key={idx}>
+                              <TableCell className="font-medium">{s.role}</TableCell>
+                              <TableCell>{s.count}</TableCell>
+                              <TableCell>₹{s.salary.toLocaleString()}</TableCell>
+                              <TableCell className="text-right font-code font-bold">₹{s.total.toLocaleString()}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </section>
+
+                    {/* Infrastructure Table */}
+                    <section className="space-y-4">
+                      <h4 className="font-bold uppercase tracking-wider text-sm border-b pb-2">3. Infrastructure & Utilities (Monthly)</h4>
+                      <Table>
+                        <TableBody>
+                          {bd.INFRASTRUCTURE.map((i, idx) => (
+                            <TableRow key={idx}>
+                              <TableCell className="font-medium">{i.item}</TableCell>
+                              <TableCell className="text-right font-code font-bold">₹{i.monthly.toLocaleString()}</TableCell>
+                            </TableRow>
+                          ))}
+                          <TableRow className="bg-primary/5 font-black">
+                            <TableCell className="uppercase">Total Monthly Operating Cost</TableCell>
+                            <TableCell className="text-right font-code text-primary">₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.monthlyRequirement.toLocaleString()}</TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </section>
+
+                    {/* One-time Setup */}
+                    <section className="space-y-4">
+                      <h4 className="font-bold uppercase tracking-wider text-sm border-b pb-2">4. One-Time Setup Costs (Estimated ₹35-40 Lakh)</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-4">
+                        {bd.ONE_TIME_SETUP.map((item, idx) => (
+                          <div key={idx} className="flex justify-between items-center p-4 border rounded bg-muted/20">
+                            <span className="text-xs font-bold uppercase text-muted-foreground">{item.item}</span>
+                            <span className="font-code font-bold text-sm">₹{item.cost.toLocaleString()}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </section>
+                  </div>
                 </DialogContent>
               </Dialog>
             </CardHeader>
