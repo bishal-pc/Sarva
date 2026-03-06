@@ -1,8 +1,9 @@
+
 "use client";
 
 import {Card, CardContent, CardHeader, CardTitle, CardDescription} from '@/components/ui/card';
 import {SIMULATION_CONSTANTS} from '@/lib/simulation-logic';
-import {ArrowRight, School, MapPin, Layers, Info} from 'lucide-react';
+import {ArrowRight, School, MapPin, Layers, Info, Trash2, Sparkles, Award, Droplets, Users} from 'lucide-react';
 import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from '@/components/ui/dialog';
 import {Button} from '@/components/ui/button';
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '@/components/ui/table';
@@ -268,6 +269,76 @@ export default function OperationsPage() {
                 <span>Kamrup Rural</span>
                 <ArrowRight className="w-4 h-4" />
                 <span>Darrang</span>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* New Wing: Sarva Swachata */}
+          <Card className="border-l-4 border-l-emerald-500 shadow-sm">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Trash2 className="w-5 h-5 text-emerald-500" />
+                Sarva Swachata: The Cleanliness Wing
+              </CardTitle>
+              <CardDescription>
+                Systematic allocation of surplus funds for dignified urban sanitation and community accountability.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-8">
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                As educational institutions reach self-sustaining virtual funding, surplus contributions are directed to the **Sarva Swachata** wing. This wing focuses on transforming the physical health and dignity of our towns through structured civic maintenance.
+              </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <h4 className="font-bold text-sm uppercase flex items-center gap-2 text-foreground">
+                    <Users className="w-4 h-4 text-emerald-600" />
+                    Dignified Sanitation Force
+                  </h4>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    Appointing full-time, salaried sanitation workers with fair wages and protective equipment. We move from informal waste handling to a respected, professionalized civic force.
+                  </p>
+                </div>
+                
+                <div className="space-y-2">
+                  <h4 className="font-bold text-sm uppercase flex items-center gap-2 text-foreground">
+                    <MapPin className="w-4 h-4 text-emerald-600" />
+                    Street-Level Organization
+                  </h4>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    Every town is mapped into specific street sectors. Teams are organized and assigned specific streets and drains, ensuring 100% coverage and clear accountability for cleanliness.
+                  </p>
+                </div>
+                
+                <div className="space-y-2">
+                  <h4 className="font-bold text-sm uppercase flex items-center gap-2 text-foreground">
+                    <Droplets className="w-4 h-4 text-emerald-600" />
+                    Drainage & Infrastructure
+                  </h4>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    Regular desilting and maintenance of public drains to prevent waterlogging and health hazards. We ensure that the "invisible" infrastructure of our city remains clean and functional.
+                  </p>
+                </div>
+                
+                <div className="space-y-2">
+                  <h4 className="font-bold text-sm uppercase flex items-center gap-2 text-foreground">
+                    <Award className="w-4 h-4 text-emerald-600" />
+                    Recognition & Incentives
+                  </h4>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    Streets that maintain standard cleanliness benchmarks receive collective recognition. Residents are incentivized through public accolades and simulated "Model Street" credits.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-emerald-50/50 p-4 rounded-lg border border-emerald-100 flex items-start gap-3">
+                <Sparkles className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <p className="text-xs font-bold text-emerald-900">Surplus Impact Strategy</p>
+                  <p className="text-[11px] text-emerald-800 leading-relaxed">
+                    When the virtual pool exceeds local educational needs, the simulation automatically prioritizes the "Sarva Swachata" model, ensuring that children studying in Sarva schools also live in a clean, hygienic environment.
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
