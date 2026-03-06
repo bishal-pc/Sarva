@@ -54,6 +54,8 @@ const STATES = [
   "West Bengal"
 ];
 
+const LOCAL_STORAGE_KEY = 'sarva_last_contribution';
+
 export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => void}) {
   const [amount, setAmount] = useState<number>(SIMULATION_CONSTANTS.MIN_CONTRIBUTION);
   const [state, setState] = useState<string>("");
@@ -62,11 +64,13 @@ export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => vo
   const {toast} = useToast();
   const firestore = useFirestore();
 
+  // Check rate limit on mount
   useEffect(() => {
-    const lastContribution = localStorage.getItem('sarva_last_contribution');
+    const lastContribution = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (lastContribution) {
       const date = new Date(lastContribution);
       const now = new Date();
+      // Lock if contribution was made in the current month and year
       if (date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear()) {
         setHasContributed(true);
       }
@@ -76,6 +80,22 @@ export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => vo
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Final check for rate limit before submission
+    const lastContribution = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (lastContribution) {
+      const date = new Date(lastContribution);
+      const now = new Date();
+      if (date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear()) {
+        setHasContributed(true);
+        toast({
+          variant: "destructive",
+          title: "Limit Reached",
+          description: "This device has already contributed to the simulation this month.",
+        });
+        return;
+      }
+    }
+
     if (!state) {
       toast({
         variant: "destructive",
@@ -106,7 +126,7 @@ export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => vo
     const contributionsRef = collection(firestore, 'contributions');
     const statsRef = doc(firestore, 'stats', 'global');
 
-    // 1. Log the individual contribution
+    // 1. Log the individual anonymous contribution for the public ledger
     addDoc(contributionsRef, contributionData)
       .catch(async (error) => {
         errorEmitter.emit('permission-error', new FirestorePermissionError({
@@ -116,7 +136,7 @@ export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => vo
         }));
       });
 
-    // 2. Increment global stats
+    // 2. Increment global simulation stats atomically
     setDoc(statsRef, {
       totalPool: increment(amount),
       totalParticipants: increment(1)
@@ -129,7 +149,8 @@ export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => vo
         }));
       });
 
-    localStorage.setItem('sarva_last_contribution', new Date().toISOString());
+    // 3. Set the device-level lock
+    localStorage.setItem(LOCAL_STORAGE_KEY, new Date().toISOString());
     setHasContributed(true);
     onSuccess(amount);
     
@@ -141,12 +162,12 @@ export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => vo
 
   if (hasContributed) {
     return (
-      <Card className="bg-muted/50 border-dashed">
-        <CardContent className="pt-6 text-center">
-          <CardTitle className="text-lg mb-2">Thank you for participating!</CardTitle>
-          <CardDescription>
-            You have already submitted your virtual contribution for this month. 
-            Come back next month to simulate again.
+      <Card className="bg-muted/50 border-dashed border-primary/20">
+        <CardContent className="pt-8 text-center space-y-2">
+          <CardTitle className="text-xl font-black uppercase tracking-tight">Citizenship Acknowledged</CardTitle>
+          <CardDescription className="text-sm">
+            You have already recorded your virtual contribution for <strong>{new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}</strong>. 
+            <br />This device is now locked until the next simulation window.
           </CardDescription>
         </CardContent>
       </Card>
@@ -154,13 +175,14 @@ export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => vo
   }
 
   return (
-    <Card className="border-primary/20 shadow-md">
+    <Card className="border-primary/20 shadow-lg relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/10 via-primary to-primary/10" />
       <CardHeader>
         <div className="flex items-center gap-2 mb-2">
-          <Coins className="text-secondary w-5 h-5" />
-          <span className="text-xs font-bold uppercase tracking-widest text-secondary">Simulation Input</span>
+          <Coins className="text-primary w-5 h-5" />
+          <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Simulation Input</span>
         </div>
-        <CardTitle>Submit Virtual Contribution</CardTitle>
+        <CardTitle className="text-2xl font-black uppercase tracking-tighter">Submit Contribution</CardTitle>
         <CardDescription>
           What would you realistically contribute monthly if this project was real?
         </CardDescription>
@@ -168,7 +190,7 @@ export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => vo
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="amount">Monthly Virtual Amount (₹)</Label>
+            <Label htmlFor="amount" className="text-xs font-bold uppercase text-muted-foreground">Monthly Virtual Amount (₹)</Label>
             <Input
               id="amount"
               type="number"
@@ -176,46 +198,53 @@ export function ContributionForm({onSuccess}: {onSuccess: (amount: number) => vo
               max={SIMULATION_CONSTANTS.MAX_REALISTIC_CONTRIBUTION}
               value={amount}
               onChange={(e) => setAmount(Number(e.target.value))}
-              className="text-lg font-semibold"
+              className="text-lg font-black h-12 border-primary/20 bg-primary/5"
             />
-            <div className="flex items-start gap-2 p-2 rounded bg-blue-50/50 border border-blue-100 mt-2">
-              <Info className="w-3 h-3 text-blue-600 shrink-0 mt-0.5" />
-              <p className="text-[10px] text-blue-800 leading-tight">
-                <strong>Realistic Data Lock:</strong> For simulation accuracy, virtual contributions are currently limited to a maximum of <strong>₹500</strong>. This helps collect more grounded data on average citizen potential.
+            <div className="flex items-start gap-2 p-3 rounded bg-blue-50/50 border border-blue-100 mt-2">
+              <Info className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+              <p className="text-[10px] text-blue-800 leading-tight font-medium">
+                <strong>Realistic Data Lock:</strong> Simulation contributions are limited to a maximum of <strong>₹500</strong> to maintain mathematical integrity based on average citizen potential.
               </p>
             </div>
           </div>
           
-          <div className="space-y-2">
-            <Label htmlFor="state">State / Union Territory</Label>
-            <Select onValueChange={setState} value={state}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select state or UT" />
-              </SelectTrigger>
-              <SelectContent>
-                {STATES.map((s) => (
-                  <SelectItem key={s} value={s}>{s}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="state" className="text-xs font-bold uppercase text-muted-foreground">State / UT</Label>
+              <Select onValueChange={setState} value={state}>
+                <SelectTrigger className="h-10">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent>
+                  {STATES.map((s) => (
+                    <SelectItem key={s} value={s}>{s}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="district" className="text-xs font-bold uppercase text-muted-foreground">District (Optional)</Label>
+              <Input
+                id="district"
+                placeholder="E.g. Kamrup"
+                value={district}
+                onChange={(e) => setDistrict(e.target.value)}
+                className="h-10"
+              />
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="district">District (Optional)</Label>
-            <Input
-              id="district"
-              placeholder="Enter your district"
-              value={district}
-              onChange={(e) => setDistrict(e.target.value)}
-            />
-          </div>
-
-          <Button type="submit" className="w-full bg-primary hover:bg-primary/90">
-            Submit to Simulation
+          <Button type="submit" className="w-full h-12 bg-primary hover:bg-primary/90 text-sm font-bold uppercase tracking-widest">
+            Commit to Simulation
           </Button>
-          <p className="text-[10px] text-center text-muted-foreground uppercase tracking-tighter">
-            One submission per month per device. No real money involved.
-          </p>
+          <div className="flex items-center justify-center gap-2 pt-2">
+            <div className="h-px bg-muted flex-1" />
+            <p className="text-[9px] text-muted-foreground uppercase font-black tracking-tighter">
+              Anonymous Device Lock Active
+            </p>
+            <div className="h-px bg-muted flex-1" />
+          </div>
         </form>
       </CardContent>
     </Card>
