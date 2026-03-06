@@ -1,10 +1,10 @@
 "use client";
 
 import {ResourceAllocation} from '@/lib/simulation-logic';
-import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
+import {Card, CardContent} from '@/components/ui/card';
 import {School, GraduationCap, Trash2, Droplets, FlaskConical} from 'lucide-react';
 
-export function ResourceDisplay({allocation, aiSuggestion}: {allocation: ResourceAllocation, aiSuggestion?: string}) {
+export function ResourceDisplay({allocation}: {allocation: ResourceAllocation}) {
   const resources = [
     {label: 'New Schools', value: allocation.schools, icon: School, color: 'text-blue-600'},
     {label: 'Teachers Hired', value: allocation.teachers, icon: GraduationCap, color: 'text-indigo-600'},
@@ -26,22 +26,6 @@ export function ResourceDisplay({allocation, aiSuggestion}: {allocation: Resourc
           </Card>
         ))}
       </div>
-      
-      {aiSuggestion && (
-        <Card className="bg-accent/30 border-none shadow-none">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-bold uppercase tracking-wider text-secondary flex items-center gap-2">
-              <FlaskConical className="w-4 h-4" />
-              Strategic AI Recommendation
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm italic text-foreground/80 leading-relaxed">
-              "{aiSuggestion}"
-            </p>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 }

@@ -8,7 +8,6 @@ import {DistrictExpansion} from '@/components/simulation/DistrictExpansion';
 import {ScalingModel} from '@/components/simulation/ScalingModel';
 import {calculateAllocation, SIMULATION_CONSTANTS} from '@/lib/simulation-logic';
 import {proposeDistrictExpansion, DistrictExpansionOutput} from '@/ai/flows/propose-district-expansion';
-import {suggestSimulatedFundAllocation} from '@/ai/flows/suggest-simulated-fund-allocation-flow';
 import {Separator} from '@/components/ui/separator';
 import {Github, ExternalLink, ShieldCheck, Wallet, Info} from 'lucide-react';
 
@@ -20,7 +19,6 @@ const INITIAL_STATS = {
 export default function Home() {
   const [stats, setStats] = useState(INITIAL_STATS);
   const [districtData, setDistrictData] = useState<DistrictExpansionOutput | undefined>();
-  const [aiSuggestion, setAiSuggestion] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<string>("");
@@ -42,12 +40,8 @@ export default function Home() {
     async function fetchAiData() {
       setLoading(true);
       try {
-        const [districts, suggestion] = await Promise.all([
-          proposeDistrictExpansion({totalSimulatedFunds: stats.pool}),
-          suggestSimulatedFundAllocation({totalVirtualPool: stats.pool})
-        ]);
+        const districts = await proposeDistrictExpansion({totalSimulatedFunds: stats.pool});
         setDistrictData(districts);
-        setAiSuggestion(suggestion.suggestion);
       } catch (e) {
         // Silently fail
       } finally {
@@ -127,7 +121,7 @@ export default function Home() {
           <div className="lg:col-span-2 space-y-12">
             <div>
               <h3 className="text-lg font-bold mb-4 uppercase tracking-widest text-muted-foreground/60">Simulated Public Assets</h3>
-              <ResourceDisplay allocation={allocation} aiSuggestion={aiSuggestion} />
+              <ResourceDisplay allocation={allocation} />
             </div>
             
             <Separator />
