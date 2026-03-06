@@ -14,7 +14,7 @@ export default function LedgerPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="border-t-4 border-t-emerald-500">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm uppercase tracking-widest text-muted-foreground">Total Real Funds</CardTitle>
+            <CardTitle className="text-sm uppercase tracking-widest text-muted-foreground">Total Virtual Funds</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-code font-bold">₹0.00</div>
