@@ -1,6 +1,6 @@
 export const SIMULATION_CONSTANTS = {
   MIN_CONTRIBUTION: 10,
-  MAX_CONTRIBUTION: 1000,
+  MAX_CONTRIBUTION: 10000,
   TOTAL_DISTRICTS_INDIA: 785, // Approximate number of districts in India
   CHILD_POP_ESTIMATE_PER_DISTRICT: 350000, // Estimated children population per district needing aid
   COSTS: {
