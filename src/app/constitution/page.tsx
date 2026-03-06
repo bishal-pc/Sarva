@@ -206,7 +206,7 @@ export default function ConstitutionPage() {
                     </div>
                     <div>
                       <h4 className="font-bold underline uppercase mb-2">"fidelity to highest constitutional purpose..."</h4>
-                      <p>This is a strategic legal stance. It confirms Sarva is not anti-government or a parallel power, but aligns with national constitutional ideals, reducing political and legal risk.</p>
+                      <p>This confirms that Sarva functions in harmony with the highest ideals of the nation, ensuring its focus remains solely on the realization of human dignity and the common good.</p>
                     </div>
                   </div>
                 </section>
