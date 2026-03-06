@@ -24,14 +24,26 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
   const dynamicNeededClass12 = Math.ceil(SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.monthlyRequirement / amount);
   const dynamicCitizensForAll = dynamicNeededClass12 * districts;
 
-  // Time to collect setup cost (in months) based on the CURRENT participants in the simulation
-  // Logic: (Setup Cost) / (Current Participants * Selected Amount)
-  // This ensures the time changes dynamically as the slider is adjusted
-  const currentMonthlyPool = Math.max(1, totalParticipants) * amount;
-  
-  const timeClass8 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_8.setupCost / currentMonthlyPool).toFixed(1);
-  const timeClass10 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_10.setupCost / currentMonthlyPool).toFixed(1);
-  const timeClass12 = (SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.setupCost / currentMonthlyPool).toFixed(1);
+  // Helper function to calculate setup time based on the required citizens group
+  function calculateSetupTime(setupCost: number, citizensNeeded: number) {
+    const monthlyPool = citizensNeeded * amount;
+    return setupCost / monthlyPool;
+  }
+
+  const timeClass8 = calculateSetupTime(
+    SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_8.setupCost,
+    dynamicNeededClass8
+  );
+
+  const timeClass10 = calculateSetupTime(
+    SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_10.setupCost,
+    dynamicNeededClass10
+  );
+
+  const timeClass12 = calculateSetupTime(
+    SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.setupCost,
+    dynamicNeededClass12
+  );
 
   // National impact stats
   const totalStudents = districts * 540;
@@ -63,7 +75,7 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
                     <strong>Sustenance:</strong> Total citizens required to meet the monthly operating budget at ₹{amount}/month.
                   </p>
                   <p className="text-[10px] leading-relaxed">
-                    <strong>Setup Phase:</strong> Estimated months for the <u>current simulation participants</u> ({totalParticipants.toLocaleString()}) to raise the setup capital at ₹{amount}/month.
+                    <strong>Setup Phase:</strong> Estimated months for the <u>required citizens group</u> to raise the setup capital at ₹{amount}/month.
                   </p>
                 </TooltipContent>
               </Tooltip>
@@ -107,7 +119,7 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
                   <div className="flex items-center gap-1.5 mt-0.5">
                     <span className="text-[10px] text-primary/70 font-semibold italic">Setup: ₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_8.setupCost.toLocaleString()}</span>
                     <span className="text-[9px] bg-primary/10 text-primary px-1 rounded flex items-center gap-0.5">
-                      <Clock className="w-2 h-2" /> ~{timeClass8} Months
+                      <Clock className="w-2 h-2" /> ~{timeClass8.toFixed(1)} Months
                     </span>
                   </div>
                 </div>
@@ -127,7 +139,7 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
                   <div className="flex items-center gap-1.5 mt-0.5">
                     <span className="text-[10px] text-primary/70 font-semibold italic">Setup: ₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_10.setupCost.toLocaleString()}</span>
                     <span className="text-[9px] bg-primary/10 text-primary px-1 rounded flex items-center gap-0.5">
-                      <Clock className="w-2 h-2" /> ~{timeClass10} Months
+                      <Clock className="w-2 h-2" /> ~{timeClass10.toFixed(1)} Months
                     </span>
                   </div>
                 </div>
@@ -147,7 +159,7 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
                   <div className="flex items-center gap-1.5 mt-0.5">
                     <span className="text-[10px] text-primary/70 font-semibold italic">Setup: ₹{SIMULATION_CONSTANTS.OPERATIONAL_TARGETS.CLASS_12.setupCost.toLocaleString()}</span>
                     <span className="text-[9px] bg-primary/10 text-primary px-1 rounded flex items-center gap-0.5">
-                      <Clock className="w-2 h-2" /> ~{timeClass12} Months
+                      <Clock className="w-2 h-2" /> ~{timeClass12.toFixed(1)} Months
                     </span>
                   </div>
                 </div>
