@@ -111,7 +111,7 @@ export default function OperationsPage() {
                             <TableHead>Count</TableHead>
                             <TableHead>Monthly Salary</TableHead>
                             <TableHead className="text-right">Total</TableHead>
-                          </TableHeader>
+                          </TableRow>
                         </TableHeader>
                         <TableBody>
                           {bd.STAFF.map((s, idx) => (
