@@ -1,8 +1,10 @@
+
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { SIMULATION_CONSTANTS } from '@/lib/simulation-logic';
-import { Globe, Users, GraduationCap, Map, ArrowRight } from 'lucide-react';
+import { Globe, Users, GraduationCap, Map, ArrowRight, Info } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface ScalingModelProps {
   citizensNeededPerSchool: number;
@@ -18,9 +20,29 @@ export function ScalingModel({ citizensNeededPerSchool, totalParticipants }: Sca
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
       <Card className="border-l-4 border-l-blue-500">
         <CardHeader>
-          <div className="flex items-center gap-2 mb-2">
-            <Globe className="w-5 h-5 text-blue-500" />
-            <CardTitle className="text-lg">National Scaling Model</CardTitle>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 mb-2">
+              <Globe className="w-5 h-5 text-blue-500" />
+              <CardTitle className="text-lg">National Scaling Model</CardTitle>
+            </div>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button className="text-muted-foreground hover:text-primary transition-colors">
+                    <Info className="w-4 h-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs p-4 space-y-2">
+                  <p className="font-bold text-xs uppercase">How we calculate this:</p>
+                  <p className="text-[10px] leading-relaxed">
+                    <strong>Citizens Needed</strong> = Monthly School Cost (₹22L) ÷ Avg. Virtual Contribution.
+                  </p>
+                  <p className="text-[10px] leading-relaxed">
+                    Scaling assumes one full Class 1-12 Sarva institution per district.
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
           <CardDescription>
             Scaling from one district to every corner of India.
@@ -57,7 +79,7 @@ export function ScalingModel({ citizensNeededPerSchool, totalParticipants }: Sca
               District Coverage Target: {districts}
             </div>
             <p className="text-[11px] text-muted-foreground leading-relaxed">
-              Based on {districts} districts, providing quality education to approximately {(districts * 540 / 100000).toFixed(1)} Lakh children simultaneously.
+              Based on {districts} districts, providing quality education to approximately {(districts * 360 / 100000).toFixed(1)} Lakh children simultaneously (360 per school).
             </p>
           </div>
         </CardContent>
