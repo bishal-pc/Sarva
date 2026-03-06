@@ -81,14 +81,14 @@ export function ScalingModel({ allocation, totalParticipants }: ScalingModelProp
             <Slider
               value={perCitizenAmount}
               onValueChange={setPerCitizenAmount}
-              max={500}
+              max={1000}
               min={10}
               step={5}
               className="py-4"
             />
             <div className="flex justify-between text-[10px] font-bold text-muted-foreground uppercase">
               <span>Min: ₹10</span>
-              <span>Max: ₹500</span>
+              <span>Max: ₹1000</span>
             </div>
           </div>
 
