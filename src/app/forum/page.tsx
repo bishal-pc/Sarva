@@ -8,13 +8,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { MessageSquare, User, MapPin, Calendar, ShieldAlert, Loader2 } from 'lucide-react';
+import { MessageSquare, User, MapPin, Calendar, ShieldAlert, Loader2, CheckCircle2 } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { useCollection, useFirestore } from '@/firebase';
 import { collection, query, orderBy, limit, setDoc, doc, serverTimestamp, getDoc } from 'firebase/firestore';
-import { errorEmitter } from '@/firebase/error-emitter';
-import { FirestorePermissionError } from '@/firebase/errors';
-import { getDeviceFingerprint } from '@/lib/fingerprint';
+import { getDeviceFingerprint, getDayKey } from '@/lib/fingerprint';
 
 const STATES = [
   "Andaman and Nicobar Islands",
@@ -55,14 +53,13 @@ const STATES = [
   "West Bengal"
 ];
 
-// Limit to 3 posts per device per day via fingerprint
-const DAILY_LIMIT = 3;
-
 export default function ForumPage() {
   const [name, setName] = useState('');
   const [state, setState] = useState('');
   const [content, setContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hasPostedToday, setHasPostedToday] = useState(false);
+  const [isChecking, setIsChecking] = useState(true);
   const { toast } = useToast();
   const firestore = useFirestore();
 
@@ -76,6 +73,27 @@ export default function ForumPage() {
   }, [firestore]);
 
   const { data: posts, loading } = useCollection(forumQuery);
+
+  useEffect(() => {
+    async function checkDailyStatus() {
+      if (!firestore) return;
+      try {
+        const fingerprint = await getDeviceFingerprint();
+        const todayKey = getDayKey();
+        const postDocId = `${fingerprint}_${todayKey}`;
+        const postRef = doc(firestore, 'forum_posts', postDocId);
+        const snap = await getDoc(postRef);
+        if (snap.exists()) {
+          setHasPostedToday(true);
+        }
+      } catch (e) {
+        console.error("Failed to check daily forum status", e);
+      } finally {
+        setIsChecking(false);
+      }
+    }
+    checkDailyStatus();
+  }, [firestore]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,26 +113,18 @@ export default function ForumPage() {
 
     try {
       const fingerprint = await getDeviceFingerprint();
-      const today = new Date().toISOString().split('T')[0];
-      
-      // We use a simple counter suffix to allow multiple posts per day
-      // For this MVP, we check existence of slots 0, 1, 2
-      let slot = -1;
-      for (let i = 0; i < DAILY_LIMIT; i++) {
-        const testId = `${fingerprint}_${today}_${i}`;
-        const testRef = doc(firestore, 'forum_posts', testId);
-        const snap = await getDoc(testRef);
-        if (!snap.exists()) {
-          slot = i;
-          break;
-        }
-      }
+      const todayKey = getDayKey();
+      const postDocId = `${fingerprint}_${todayKey}`;
+      const postRef = doc(firestore, 'forum_posts', postDocId);
 
-      if (slot === -1) {
+      // Check existence again just before submission for double safety
+      const snap = await getDoc(postRef);
+      if (snap.exists()) {
+        setHasPostedToday(true);
         toast({
           variant: "destructive",
           title: "Daily Limit Reached",
-          description: `You have reached the daily limit of ${DAILY_LIMIT} posts per device.`,
+          description: "This device has already shared a message today. Thank you for participating!",
         });
         setIsSubmitting(false);
         return;
@@ -128,13 +138,11 @@ export default function ForumPage() {
         deviceId: fingerprint,
       };
 
-      const postDocId = `${fingerprint}_${today}_${slot}`;
-      const postRef = doc(firestore, 'forum_posts', postDocId);
-
       await setDoc(postRef, postData);
 
       setName('');
       setContent('');
+      setHasPostedToday(true);
       
       toast({
         title: "Post Submitted",
@@ -142,10 +150,11 @@ export default function ForumPage() {
       });
     } catch (error: any) {
       if (error.code === 'permission-denied') {
+        setHasPostedToday(true);
         toast({
           variant: "destructive",
           title: "Post Error",
-          description: "This device is restricted from posting more content today.",
+          description: "You have already reached the daily posting limit for this device.",
         });
       } else {
         toast({
@@ -170,78 +179,105 @@ export default function ForumPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="md:col-span-1">
-          <Card className="sticky top-24 border-primary/20">
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <MessageSquare className="w-5 h-5 text-primary" />
-                Join the Discussion
-              </CardTitle>
-              <CardDescription>
-                Share your views. No accounts needed.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Full Name</Label>
-                  <Input 
-                    id="name" 
-                    placeholder="E.g. Rajesh Kumar" 
-                    value={name} 
-                    onChange={(e) => setName(e.target.value)} 
-                    disabled={isSubmitting}
-                  />
+          {isChecking ? (
+            <Card className="border-dashed bg-muted/20">
+              <CardContent className="py-12 flex flex-col items-center justify-center gap-4">
+                <Loader2 className="w-6 h-6 animate-spin text-primary opacity-50" />
+                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Verifying eligibility...</p>
+              </CardContent>
+            </Card>
+          ) : hasPostedToday ? (
+            <Card className="border-emerald-200 bg-emerald-50/20 border-dashed">
+              <CardContent className="pt-8 text-center space-y-4">
+                <div className="flex justify-center">
+                  <CheckCircle2 className="w-10 h-10 text-emerald-500" />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="state">State / UT</Label>
-                  <Select onValueChange={setState} value={state} disabled={isSubmitting}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select state or UT" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {STATES.map((s) => (
-                        <SelectItem key={s} value={s}>{s}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                <div className="space-y-1">
+                  <CardTitle className="text-lg font-black uppercase tracking-tight">Daily Entry Recorded</CardTitle>
+                  <CardDescription className="text-xs">
+                    This device has already posted today. To maintain a high signal-to-noise ratio, we limit participation to one post per day.
+                  </CardDescription>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="content">Your Views / Feedback</Label>
-                  <Textarea 
-                    id="content" 
-                    placeholder="What do you think about the civic simulation?" 
-                    className="min-h-[120px]"
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                    disabled={isSubmitting}
-                  />
+                <div className="pt-4">
+                  <p className="text-[10px] font-bold uppercase text-emerald-700">Thank you for your voice</p>
                 </div>
-                
-                <div className="flex items-center gap-2 p-2 bg-muted/50 rounded text-[10px] text-muted-foreground border">
-                  <ShieldAlert className="w-3 h-3 shrink-0" />
-                  <span>Verified via secure device fingerprinting</span>
-                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card className="sticky top-24 border-primary/20">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <MessageSquare className="w-5 h-5 text-primary" />
+                  Join the Discussion
+                </CardTitle>
+                <CardDescription className="text-xs">
+                  Share your views. No accounts needed.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name" className="text-xs font-bold uppercase text-muted-foreground">Full Name</Label>
+                    <Input 
+                      id="name" 
+                      placeholder="E.g. Rajesh Kumar" 
+                      value={name} 
+                      onChange={(e) => setName(e.target.value)} 
+                      disabled={isSubmitting}
+                      className="h-9 text-sm"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="state" className="text-xs font-bold uppercase text-muted-foreground">State / UT</Label>
+                    <Select onValueChange={setState} value={state} disabled={isSubmitting}>
+                      <SelectTrigger className="h-9 text-sm">
+                        <SelectValue placeholder="Select" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {STATES.map((s) => (
+                          <SelectItem key={s} value={s}>{s}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="content" className="text-xs font-bold uppercase text-muted-foreground">Your Views</Label>
+                    <Textarea 
+                      id="content" 
+                      placeholder="What do you think about the civic simulation?" 
+                      className="min-h-[120px] text-sm"
+                      value={content}
+                      onChange={(e) => setContent(e.target.value)}
+                      disabled={isSubmitting}
+                    />
+                  </div>
+                  
+                  <div className="flex items-center gap-2 p-2 bg-muted/50 rounded text-[10px] text-muted-foreground border">
+                    <ShieldAlert className="w-3 h-3 shrink-0" />
+                    <span>One post per device per day</span>
+                  </div>
 
-                <Button type="submit" className="w-full" disabled={isSubmitting}>
-                  {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-                  Submit Post
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
+                  <Button type="submit" className="w-full font-bold uppercase tracking-widest text-xs h-10" disabled={isSubmitting}>
+                    {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                    Submit Post
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          )}
         </div>
 
         <div className="md:col-span-2 space-y-6">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Recent Activity</h3>
+            <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Recent Activity</h3>
             <span className="text-xs text-muted-foreground">{posts?.length || 0} entries recorded</span>
           </div>
 
           <div className="space-y-4">
             {loading ? (
               <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-4">
-                <Loader2 className="w-8 h-8 animate-spin" />
-                <p className="text-sm font-medium">Synchronizing live discussions...</p>
+                <Loader2 className="w-8 h-8 animate-spin opacity-20" />
+                <p className="text-xs font-bold uppercase tracking-widest">Synchronizing live discussions...</p>
               </div>
             ) : posts?.length === 0 ? (
               <Card className="border-dashed">

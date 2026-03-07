@@ -31,3 +31,8 @@ export function getMonthYearKey(): string {
   const now = new Date();
   return `${now.getFullYear()}-${now.getMonth() + 1}`;
 }
+
+export function getDayKey(): string {
+  const now = new Date();
+  return now.toISOString().split('T')[0];
+}
